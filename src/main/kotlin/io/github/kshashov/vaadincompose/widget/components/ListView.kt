@@ -5,18 +5,20 @@ import io.github.kshashov.vaadincompose.widget.Element
 import io.github.kshashov.vaadincompose.widget.MultiChildRenderElement
 import io.github.kshashov.vaadincompose.widget.RenderWidget
 import io.github.kshashov.vaadincompose.widget.Widget
+import kotlin.streams.toList
 
-class Container(
-        val components: List<Widget>,
+class ListView<T>(
+        val items: Collection<T>,
+        val render: (item: T) -> Widget,
         val direction: FlexLayout.FlexDirection = FlexLayout.FlexDirection.ROW,
         key: String? = null, height: String? = null, width: String? = null, id: String = "", classes: Collection<String> = listOf(), alignItems: String? = null, justifyContent: String? = null
 ) : RenderWidget(key, height, width, id, classes, alignItems, justifyContent) {
 
-    override fun createElement(): Element<Container> {
+    override fun createElement(): Element<ListView<T>> {
         return ContainerRenderElement(this)
     }
 
-    class ContainerRenderElement(widget: Container) : MultiChildRenderElement<Container, FlexLayout>(widget) {
+    class ContainerRenderElement<T>(widget: ListView<T>) : MultiChildRenderElement<ListView<T>, FlexLayout>(widget) {
 
         override fun createComponent(): FlexLayout {
             return FlexLayout()
@@ -27,6 +29,8 @@ class Container(
             component.setFlexDirection(widget.direction)
         }
 
-        override fun getChilds() = this.widget.components
+        override fun getChilds() = this.widget.items.stream()
+                .map { item -> widget.render.invoke(item) }
+                .toList()
     }
 }

@@ -1,37 +1,31 @@
 package io.github.kshashov.vaadincompose.widget.components
 
-import com.vaadin.flow.component.textfield.TextField
 import com.vaadin.flow.shared.Registration
 import io.github.kshashov.vaadincompose.widget.Element
 import io.github.kshashov.vaadincompose.widget.RenderElement
 import io.github.kshashov.vaadincompose.widget.RenderWidget
 
-class Text(
+class Button(
         val text: String = "",
-        val label: String = "",
-        val onChanged: (String) -> Unit = { },
+        val action: () -> Unit = {},
         key: String? = null, height: String? = null, width: String? = null, id: String = "", classes: Collection<String> = listOf(), alignItems: String? = null, justifyContent: String? = null
 ) : RenderWidget(key, height, width, id, classes, alignItems, justifyContent) {
 
-    override fun createElement(): Element<Text> {
-        return TextRenderElement(this)
+    override fun createElement(): Element<Button> {
+        return ButtonRenderElement(this)
     }
 
-    class TextRenderElement(widget: Text) : RenderElement<Text, TextField>(widget) {
+    class ButtonRenderElement(widget: Button) : RenderElement<Button, com.vaadin.flow.component.button.Button>(widget) {
         private var reg: Registration? = null
 
-        override fun createComponent(): TextField {
-            return TextField()
+        override fun createComponent(): com.vaadin.flow.component.button.Button {
+            return com.vaadin.flow.component.button.Button()
         }
 
         override fun update() {
             reg?.remove()
-
-            component.label = widget.label
-            component.value = widget.text
-            reg = component.addValueChangeListener {
-                widget.onChanged.invoke(it.value)
-            }
+            component.text = widget.text
+            reg = component.addClickListener { widget.action.invoke() }
         }
     }
 }

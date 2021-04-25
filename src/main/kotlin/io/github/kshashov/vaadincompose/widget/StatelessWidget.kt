@@ -13,8 +13,14 @@ abstract class StatelessWidget(key: String? = null) : Widget(key) {
     class StatelessElement(widget: StatelessWidget) : Element<StatelessWidget>(widget) {
 
         override fun render(context: BuildContext): Component {
-            val builded = widget.build(context)
-            return builded.createElement().render(context)
+            val child = widget.build(context)
+            return child.createElement().mount(context)
+        }
+
+        override fun updateWidgetContext(widget: Widget) {
+            super.updateWidgetContext(widget)
+            val child = this.widget.build(context)
+            context.childs[0].element?.updateWidgetContext(child)
         }
     }
 }

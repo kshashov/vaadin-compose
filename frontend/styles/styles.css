@@ -1,0 +1,13 @@
+.main-widget {
+    padding: 10px;
+}
+
+.card {
+    padding: 5px;
+    margin: 5px;
+    box-shadow: 0 0 6px rgba(0, 0, 0, 0.2);
+}
+
+.todo-item label {
+    padding-left: 10px;
+}
