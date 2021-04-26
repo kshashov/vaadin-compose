@@ -1,20 +1,24 @@
 package io.github.kshashov.vaadincompose
 
-import com.vaadin.flow.component.html.Div
+import com.vaadin.flow.component.HasComponents
 import io.github.kshashov.vaadincompose.widget.Widget
-import io.github.kshashov.vaadincompose.widget.components.Container
 import javax.annotation.PostConstruct
 
-abstract class ComposablePage : Div() {
+interface ComposablePage {
 
     @PostConstruct
     fun render() {
+        if (this !is HasComponents) {
+            throw NotImplementedError("ComposablePage is only supportted for HasComponents")
+        }
+
         val context = buildContext()
-        val container = Container(listOf(build(context)))
+        val container = build(context)
+
         add(container.createElement().mount(context))
     }
 
-    protected fun buildContext() = BuildContext()
+    fun buildContext() = BuildContext()
 
-    abstract fun build(context: BuildContext): Widget
+    fun build(context: BuildContext): Widget
 }

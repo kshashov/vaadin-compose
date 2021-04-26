@@ -5,6 +5,7 @@ import io.github.kshashov.vaadincompose.BuildContext
 
 abstract class Element<WIDGET : Widget>(var widget: WIDGET) {
     lateinit var context: BuildContext
+    lateinit var renderedComponent: Component
 
     fun attachContext(context: BuildContext): BuildContext {
         val node = BuildContext(this, parent = context)
@@ -15,13 +16,14 @@ abstract class Element<WIDGET : Widget>(var widget: WIDGET) {
 
     fun mount(context: BuildContext): Component {
         val node = attachContext(context)
-        return render(node)
+        renderedComponent = render(node)
+        return renderedComponent
     }
 
     abstract fun render(context: BuildContext): Component
 
     @Suppress("UNCHECKED_CAST")
-    open fun updateWidgetContext(widget: Widget) {
+    open fun updateContext(widget: Widget) {
         this.widget = widget as WIDGET;
     }
 }

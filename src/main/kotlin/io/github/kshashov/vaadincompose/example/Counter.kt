@@ -1,6 +1,7 @@
 package io.github.kshashov.vaadincompose.example
 
 import com.vaadin.flow.component.dependency.CssImport
+import com.vaadin.flow.component.html.Div
 import com.vaadin.flow.component.orderedlayout.FlexLayout
 import com.vaadin.flow.router.Route
 import io.github.kshashov.vaadincompose.BuildContext
@@ -13,7 +14,7 @@ import io.github.kshashov.vaadincompose.widget.components.Label
 
 @CssImport("./styles/styles.css")
 @Route("counter")
-class Counter : ComposablePage() {
+class Counter : Div(), ComposablePage {
 
     override fun build(context: BuildContext): Widget {
         return MainWidget()

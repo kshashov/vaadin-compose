@@ -17,10 +17,10 @@ abstract class StatelessWidget(key: String? = null) : Widget(key) {
             return child.createElement().mount(context)
         }
 
-        override fun updateWidgetContext(widget: Widget) {
-            super.updateWidgetContext(widget)
+        override fun updateContext(widget: Widget) {
+            super.updateContext(widget)
             val child = this.widget.build(context)
-            context.childs[0].element?.updateWidgetContext(child)
+            context.childs[0].element.updateContext(child)
         }
     }
 }

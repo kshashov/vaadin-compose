@@ -19,14 +19,14 @@ abstract class StatefulWidget<STATE : StatefulWidget.WidgetState>(key: String? =
             return child.createElement().mount(context)
         }
 
-        override fun updateWidgetContext(widget: Widget) {
-            super.updateWidgetContext(widget)
+        override fun updateContext(widget: Widget) {
+            super.updateContext(widget)
             val child = state.build(context)
-            context.childs[0].element?.updateWidgetContext(child)
+            context.childs[0].element.updateContext(child)
         }
 
         fun rebuild() {
-            updateWidgetContext(widget)
+            updateContext(widget)
 
             context.visitNearestElementInheritors(RenderElement::class.java) {
                 it.dirty = true
@@ -41,13 +41,13 @@ abstract class StatefulWidget<STATE : StatefulWidget.WidgetState>(key: String? =
         }
     }
 
-    abstract class WidgetState() {
-        var element: StatefulElement<out WidgetState>? = null
+    abstract class WidgetState {
+        lateinit var element: StatefulElement<out WidgetState>
         abstract fun build(context: BuildContext): Widget
 
         fun setState(action: () -> Unit) {
             action.invoke()
-            element?.rebuild()
+            element.rebuild()
         }
     }
 }
