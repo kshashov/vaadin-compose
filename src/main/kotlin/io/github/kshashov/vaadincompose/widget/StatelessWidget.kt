@@ -1,6 +1,5 @@
 package io.github.kshashov.vaadincompose.widget
 
-import com.vaadin.flow.component.Component
 import io.github.kshashov.vaadincompose.BuildContext
 
 abstract class StatelessWidget(key: String? = null) : Widget(key) {
@@ -10,17 +9,10 @@ abstract class StatelessWidget(key: String? = null) : Widget(key) {
 
     protected abstract fun build(context: BuildContext): Widget
 
-    class StatelessElement(widget: StatelessWidget) : Element<StatelessWidget>(widget) {
+    class StatelessElement(widget: StatelessWidget) : SingleChildElement<StatelessWidget>(widget) {
 
-        override fun render(context: BuildContext): Component {
-            val child = widget.build(context)
-            return child.createElement().mount(context)
-        }
-
-        override fun updateContext(widget: Widget) {
-            super.updateContext(widget)
-            val child = this.widget.build(context)
-            context.childs[0].element.updateContext(child)
+        override fun getChild(): Widget {
+            return widget.build(context)
         }
     }
 }

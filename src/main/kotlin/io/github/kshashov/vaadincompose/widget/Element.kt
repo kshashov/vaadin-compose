@@ -22,6 +22,10 @@ abstract class Element<WIDGET : Widget>(var widget: WIDGET) {
 
     abstract fun render(context: BuildContext): Component
 
+    protected fun key(widget: Widget, index: Int): String {
+        return widget.key ?: widget.javaClass.name + index
+    }
+
     @Suppress("UNCHECKED_CAST")
     open fun updateContext(widget: Widget) {
         this.widget = widget as WIDGET;

@@ -10,7 +10,14 @@ abstract class MultiChildRenderElement<WIDGET, COMPONENT>(widget: WIDGET) : Rend
 
     override fun render(context: BuildContext): Component {
         component = createComponent()
-        updateContextChilds(getChilds())
+
+        // Populate layout and cache
+        for (childWidget in getChilds()) {
+            val childElement = childWidget.createElement()
+            component.add(childElement.mount(context))
+            elementsCache[key(childElement.widget, 0)] = childElement
+        }
+
         update()
         return component
     }
@@ -70,10 +77,6 @@ abstract class MultiChildRenderElement<WIDGET, COMPONENT>(widget: WIDGET) : Rend
             val childComponent = childContext.element.renderedComponent
             component.add(childComponent)
         }
-    }
-
-    protected fun key(widget: Widget, index: Int): String {
-        return widget.key ?: widget.javaClass.name + index
     }
 }
 
