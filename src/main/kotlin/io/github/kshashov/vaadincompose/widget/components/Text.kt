@@ -30,8 +30,8 @@ class Text(
             return TextField()
         }
 
-        override fun refresh() {
-            super.refresh();
+        override fun refreshComponent() {
+            super.refreshComponent();
 
             reg?.remove()
 

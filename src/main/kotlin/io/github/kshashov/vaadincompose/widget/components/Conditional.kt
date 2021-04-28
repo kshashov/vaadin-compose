@@ -37,8 +37,8 @@ class Conditional(
 
         override fun createComponent(): FlexLayout = FlexLayout()
 
-        override fun onBeforeContextRefresh() {
-            super.onBeforeContextRefresh()
+        override fun onBeforeWidgetRefresh() {
+            super.onBeforeWidgetRefresh()
 
             if (context.childs.isNotEmpty()) {
                 // Update internal element cache for previous condition

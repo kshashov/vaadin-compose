@@ -5,28 +5,28 @@ import io.github.kshashov.vaadincompose.BuildContext
 
 abstract class SingleChildElement<WIDGET : Widget>(widget: WIDGET) : Element<WIDGET>(widget) {
     private val elementsCache: MutableMap<String, Element<*>> = HashMap()
+    private lateinit var rendered: Component
 
     override fun render(context: BuildContext): Component {
-        val child = getChild()
-
-        // Proxy child component and populate cache
-        val component = child.createElement().mount(context)
-        elementsCache[key(child, 0)] = context.childs[0].element
-
-        return component
+        return renderedComponent
     }
 
-    override fun doUpdateContext(widget: Widget) {
-        super.doUpdateContext(widget)
+    override fun onBeforeRender() {
+        super.onBeforeRender()
+        updateContextChilds(getChild())
+    }
+
+    override fun onAfterWidgetRefresh() {
+        super.onAfterWidgetRefresh()
         updateContextChilds(getChild())
     }
 
     abstract fun getChild(): Widget
 
     /**
-     * Update context.childs metainfo
+     * Update context.childs metainfo.
      */
-    protected fun updateContextChilds(child: Widget) {
+    private fun updateContextChilds(child: Widget) {
         context.childs.clear()
 
         // Store useful cache keys
@@ -41,7 +41,7 @@ abstract class SingleChildElement<WIDGET : Widget>(widget: WIDGET) : Element<WID
 
             // We shouldn't mount existing element here
             // Just propagate context updating to child
-            cachedElement.updateContext(child)
+            cachedElement.attachWidget(child)
             context.childs.add(cachedElement.context)
         } else {
             // Create and mount new element

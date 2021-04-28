@@ -28,8 +28,8 @@ class Button(
             return com.vaadin.flow.component.button.Button()
         }
 
-        override fun refresh() {
-            super.refresh();
+        override fun refreshComponent() {
+            super.refreshComponent();
 
             reg?.remove()
             component.text = widget.text

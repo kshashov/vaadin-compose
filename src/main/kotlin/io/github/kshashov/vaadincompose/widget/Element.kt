@@ -7,41 +7,59 @@ abstract class Element<WIDGET : Widget>(var widget: WIDGET) {
     lateinit var context: BuildContext
     lateinit var renderedComponent: Component
 
-    private fun attachContext(context: BuildContext): BuildContext {
-        val node = BuildContext(this, parent = context)
-        context.childs.add(node)
-        this.context = node
-        return node
-    }
-
-    fun mount(context: BuildContext): Component {
-        val node = attachContext(context)
-        renderedComponent = render(node)
+    /**
+     * Adds element to the current build context and populate [renderedComponent] property.
+     * Invoked before the first element usage.
+     */
+    fun mount(parent: BuildContext): Component {
+        attachContext(parent)
+        onBeforeRender()
+        renderedComponent = render(context)
+        onAfterRender()
         return renderedComponent
     }
 
+    /**
+     * Creates and configures component for this element.
+     */
     protected abstract fun render(context: BuildContext): Component
 
-    fun updateContext(widget: Widget) {
-        onBeforeContextRefresh()
-        doUpdateContext(widget)
-        onAfterContextRefresh()
+    /**
+     * Refreshes element state accoring to a new [widget] info.
+     */
+    fun attachWidget(widget: Widget) {
+        onBeforeWidgetRefresh()
+        doAttachWidget(widget)
+        onAfterWidgetRefresh()
     }
 
     protected open fun key(widget: Widget, index: Int): String {
         return widget.key ?: widget.javaClass.name + index
     }
 
+    private fun attachContext(parent: BuildContext) {
+        context = BuildContext(this, parent = parent)
+        parent.childs.add(context)
+    }
+
     @Suppress("UNCHECKED_CAST")
-    protected open fun doUpdateContext(widget: Widget) {
+    private fun doAttachWidget(widget: Widget) {
         this.widget = widget as WIDGET;
     }
 
-    protected open fun onBeforeContextRefresh() {
+    protected open fun onBeforeRender() {
         // Do nothing
     }
 
-    protected open fun onAfterContextRefresh() {
+    protected open fun onAfterRender() {
+        // Do nothing
+    }
+
+    protected open fun onBeforeWidgetRefresh() {
+        // Do nothing
+    }
+
+    protected open fun onAfterWidgetRefresh() {
         // Do nothing
     }
 }

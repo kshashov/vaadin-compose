@@ -24,8 +24,8 @@ class Label(
             return com.vaadin.flow.component.html.Label()
         }
 
-        override fun refresh() {
-            super.refresh();
+        override fun refreshComponent() {
+            super.refreshComponent();
             component.text = widget.text
         }
     }

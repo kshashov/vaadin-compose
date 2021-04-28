@@ -24,7 +24,7 @@ abstract class StatefulWidget<STATE : StatefulWidget.WidgetState>(key: String? =
         }
 
         fun rebuild() {
-            updateContext(widget)
+            attachWidget(widget)
 
             context.visitNearestElementInheritors(RenderElement::class.java) {
                 it.dirty = true
@@ -32,7 +32,7 @@ abstract class StatefulWidget<STATE : StatefulWidget.WidgetState>(key: String? =
 
             context.visitNearestElementInheritors(RenderElement::class.java) {
                 if (it.dirty) {
-                    it.refresh()
+                    it.refreshComponent()
                     it.dirty = false
                 }
             }

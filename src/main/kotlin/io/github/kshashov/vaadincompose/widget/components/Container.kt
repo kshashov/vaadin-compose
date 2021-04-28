@@ -28,8 +28,8 @@ class Container(
             return FlexLayout()
         }
 
-        override fun refresh() {
-            super.refresh()
+        override fun refreshComponent() {
+            super.refreshComponent()
             component.setFlexDirection(widget.direction)
         }
 

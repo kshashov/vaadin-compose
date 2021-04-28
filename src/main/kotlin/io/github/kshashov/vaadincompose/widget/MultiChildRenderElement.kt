@@ -7,10 +7,15 @@ abstract class MultiChildRenderElement<WIDGET, COMPONENT>(widget: WIDGET) : Rend
         where WIDGET : RenderWidget, COMPONENT : Component, COMPONENT : HasComponents {
     protected val elementsCache: MutableMap<String, Element<*>> = HashMap()
 
-    abstract fun getChilds(): Collection<Widget>
+    protected abstract fun getChilds(): Collection<Widget>
 
-    override fun doUpdateContext(widget: Widget) {
-        super.doUpdateContext(widget)
+    override fun onBeforeRender() {
+        super.onBeforeRender()
+        updateContextChilds(getChilds())
+    }
+
+    override fun onAfterWidgetRefresh() {
+        super.onAfterWidgetRefresh()
         updateContextChilds(getChilds())
     }
 
@@ -34,7 +39,7 @@ abstract class MultiChildRenderElement<WIDGET, COMPONENT>(widget: WIDGET) : Rend
 
                 // We shouldn't mount existing element here
                 // Just propagate context updating to child
-                cachedElement.updateContext(childWidget)
+                cachedElement.attachWidget(childWidget)
                 context.childs.add(cachedElement.context)
             } else {
                 // Create and mount new element
@@ -51,8 +56,8 @@ abstract class MultiChildRenderElement<WIDGET, COMPONENT>(widget: WIDGET) : Rend
         }
     }
 
-    override fun refresh() {
-        super.refresh()
+    override fun refreshComponent() {
+        super.refreshComponent()
 
         // TODO do not remove component childs
         component.removeAll()

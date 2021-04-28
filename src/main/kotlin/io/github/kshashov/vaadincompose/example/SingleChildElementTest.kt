@@ -38,8 +38,8 @@ class SingleChildElementTest : Div(), ComposablePage {
                         }),
                         Conditional(
                             switcher2,
-                            first = Wrapper2(Label("True"), key = "1"),
-                            second = Wrapper2(Text("False"), key = "2")
+                            first = Wrapper2(Label("True")),
+                            second = Wrapper2(Text("False"))
                         ),
                         Button("Switch stateful", {
                             setState { switcher2 = !switcher2 }
