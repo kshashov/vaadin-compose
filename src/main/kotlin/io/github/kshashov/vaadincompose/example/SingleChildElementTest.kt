@@ -9,10 +9,7 @@ import io.github.kshashov.vaadincompose.ComposablePage
 import io.github.kshashov.vaadincompose.widget.StatefulWidget
 import io.github.kshashov.vaadincompose.widget.StatelessWidget
 import io.github.kshashov.vaadincompose.widget.Widget
-import io.github.kshashov.vaadincompose.widget.components.Button
-import io.github.kshashov.vaadincompose.widget.components.Container
-import io.github.kshashov.vaadincompose.widget.components.Label
-import io.github.kshashov.vaadincompose.widget.components.Text
+import io.github.kshashov.vaadincompose.widget.components.*
 
 @CssImport("./styles/styles.css")
 @Route("singlechild")
@@ -35,14 +32,18 @@ class SingleChildElementTest : Div(), ComposablePage {
                     direction = FlexLayout.FlexDirection.COLUMN,
                     classes = listOf("main-widget"),
                     components = listOf(
-                            if (switcher1) Wrapper(Label("First")) else Wrapper(Text("Second")),
-                            Button("Switch stateless", {
-                                setState { switcher1 = !switcher1 }
-                            }),
-                            if (switcher2) Wrapper2(Label("First"), key = "1") else Wrapper2(Text("Second"), key = "2"),
-                            Button("Switch stateful", {
-                                setState { switcher2 = !switcher2 }
-                            })
+                        if (switcher1) Wrapper(Label("True")) else Wrapper(Text("False")),
+                        Button("Switch stateless", {
+                            setState { switcher1 = !switcher1 }
+                        }),
+                        Conditional(
+                            switcher2,
+                            first = Wrapper2(Label("True"), key = "1"),
+                            second = Wrapper2(Text("False"), key = "2")
+                        ),
+                        Button("Switch stateful", {
+                            setState { switcher2 = !switcher2 }
+                        })
                     ))
         }
     }

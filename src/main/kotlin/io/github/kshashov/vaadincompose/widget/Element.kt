@@ -7,7 +7,7 @@ abstract class Element<WIDGET : Widget>(var widget: WIDGET) {
     lateinit var context: BuildContext
     lateinit var renderedComponent: Component
 
-    fun attachContext(context: BuildContext): BuildContext {
+    private fun attachContext(context: BuildContext): BuildContext {
         val node = BuildContext(this, parent = context)
         context.childs.add(node)
         this.context = node
@@ -20,14 +20,28 @@ abstract class Element<WIDGET : Widget>(var widget: WIDGET) {
         return renderedComponent
     }
 
-    abstract fun render(context: BuildContext): Component
+    protected abstract fun render(context: BuildContext): Component
 
-    protected fun key(widget: Widget, index: Int): String {
+    fun updateContext(widget: Widget) {
+        onBeforeContextRefresh()
+        doUpdateContext(widget)
+        onAfterContextRefresh()
+    }
+
+    protected open fun key(widget: Widget, index: Int): String {
         return widget.key ?: widget.javaClass.name + index
     }
 
     @Suppress("UNCHECKED_CAST")
-    open fun updateContext(widget: Widget) {
+    protected open fun doUpdateContext(widget: Widget) {
         this.widget = widget as WIDGET;
+    }
+
+    protected open fun onBeforeContextRefresh() {
+        // Do nothing
+    }
+
+    protected open fun onAfterContextRefresh() {
+        // Do nothing
     }
 }

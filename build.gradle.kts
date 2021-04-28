@@ -43,6 +43,7 @@ dependencyManagement {
 tasks.withType<KotlinCompile> {
 	kotlinOptions {
 		freeCompilerArgs = listOf("-Xjsr305=strict")
+		useIR = true
 		jvmTarget = "1.8"
 	}
 }

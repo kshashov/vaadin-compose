@@ -10,13 +10,19 @@ abstract class RenderElement<WIDGET : RenderWidget, COMPONENT : Component>(widge
 
     override fun render(context: BuildContext): Component {
         component = createComponent()
-        update()
+
+        updateContext(widget)
+        refresh()
         return component
     }
 
     abstract fun createComponent(): COMPONENT
 
-    open fun update() {
+    open fun doRender() {
+        // Do nothing
+    }
+
+    open fun refresh() {
         component.setId(widget.id)
 
         val dom = component.element

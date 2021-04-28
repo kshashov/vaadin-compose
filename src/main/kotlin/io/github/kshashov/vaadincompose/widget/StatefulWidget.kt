@@ -32,7 +32,7 @@ abstract class StatefulWidget<STATE : StatefulWidget.WidgetState>(key: String? =
 
             context.visitNearestElementInheritors(RenderElement::class.java) {
                 if (it.dirty) {
-                    it.update()
+                    it.refresh()
                     it.dirty = false
                 }
             }

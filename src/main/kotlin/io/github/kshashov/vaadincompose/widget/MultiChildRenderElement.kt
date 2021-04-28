@@ -2,37 +2,22 @@ package io.github.kshashov.vaadincompose.widget
 
 import com.vaadin.flow.component.Component
 import com.vaadin.flow.component.HasComponents
-import io.github.kshashov.vaadincompose.BuildContext
 
 abstract class MultiChildRenderElement<WIDGET, COMPONENT>(widget: WIDGET) : RenderElement<WIDGET, COMPONENT>(widget)
         where WIDGET : RenderWidget, COMPONENT : Component, COMPONENT : HasComponents {
-    private val elementsCache: MutableMap<String, Element<*>> = HashMap()
-
-    override fun render(context: BuildContext): Component {
-        component = createComponent()
-
-        // Populate layout and cache
-        for (childWidget in getChilds()) {
-            val childElement = childWidget.createElement()
-            component.add(childElement.mount(context))
-            elementsCache[key(childElement.widget, 0)] = childElement
-        }
-
-        update()
-        return component
-    }
-
-    override fun updateContext(widget: Widget) {
-        super.updateContext(widget)
-        updateContextChilds(getChilds())
-    }
+    protected val elementsCache: MutableMap<String, Element<*>> = HashMap()
 
     abstract fun getChilds(): Collection<Widget>
+
+    override fun doUpdateContext(widget: Widget) {
+        super.doUpdateContext(widget)
+        updateContextChilds(getChilds())
+    }
 
     /**
      * Update context.childs metainfo
      */
-    protected fun updateContextChilds(list: Collection<Widget>) {
+    protected open fun updateContextChilds(list: Collection<Widget>) {
         context.childs.clear()
 
         // Store useful cache keys
@@ -66,8 +51,8 @@ abstract class MultiChildRenderElement<WIDGET, COMPONENT>(widget: WIDGET) : Rend
         }
     }
 
-    override fun update() {
-        super.update()
+    override fun refresh() {
+        super.refresh()
 
         // TODO do not remove component childs
         component.removeAll()

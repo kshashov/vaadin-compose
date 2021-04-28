@@ -7,10 +7,16 @@ import io.github.kshashov.vaadincompose.widget.RenderElement
 import io.github.kshashov.vaadincompose.widget.RenderWidget
 
 class Text(
-        val text: String = "",
-        val label: String = "",
-        val onChanged: (String) -> Unit = { },
-        key: String? = null, height: String? = null, width: String? = null, id: String = "", classes: Collection<String> = listOf(), alignItems: String? = null, justifyContent: String? = null
+    val text: String = "",
+    val label: String = "",
+    val onChanged: (String) -> Unit = { },
+    key: String? = null,
+    height: String? = null,
+    width: String? = null,
+    id: String = "",
+    classes: Collection<String> = listOf(),
+    alignItems: String? = null,
+    justifyContent: String? = null
 ) : RenderWidget(key, height, width, id, classes, alignItems, justifyContent) {
 
     override fun createElement(): Element<Text> {
@@ -24,7 +30,9 @@ class Text(
             return TextField()
         }
 
-        override fun update() {
+        override fun refresh() {
+            super.refresh();
+
             reg?.remove()
 
             component.label = widget.label

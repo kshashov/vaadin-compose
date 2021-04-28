@@ -6,9 +6,15 @@ import io.github.kshashov.vaadincompose.widget.RenderElement
 import io.github.kshashov.vaadincompose.widget.RenderWidget
 
 class Button(
-        val text: String = "",
-        val action: () -> Unit = {},
-        key: String? = null, height: String? = null, width: String? = null, id: String = "", classes: Collection<String> = listOf(), alignItems: String? = null, justifyContent: String? = null
+    val text: String = "",
+    val action: () -> Unit = {},
+    key: String? = null,
+    height: String? = null,
+    width: String? = null,
+    id: String = "",
+    classes: Collection<String> = listOf(),
+    alignItems: String? = null,
+    justifyContent: String? = null
 ) : RenderWidget(key, height, width, id, classes, alignItems, justifyContent) {
 
     override fun createElement(): Element<Button> {
@@ -22,7 +28,9 @@ class Button(
             return com.vaadin.flow.component.button.Button()
         }
 
-        override fun update() {
+        override fun refresh() {
+            super.refresh();
+
             reg?.remove()
             component.text = widget.text
             reg = component.addClickListener { widget.action.invoke() }

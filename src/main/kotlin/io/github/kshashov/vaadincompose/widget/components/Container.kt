@@ -7,9 +7,15 @@ import io.github.kshashov.vaadincompose.widget.RenderWidget
 import io.github.kshashov.vaadincompose.widget.Widget
 
 class Container(
-        val components: List<Widget>,
-        val direction: FlexLayout.FlexDirection = FlexLayout.FlexDirection.ROW,
-        key: String? = null, height: String? = null, width: String? = null, id: String = "", classes: Collection<String> = listOf(), alignItems: String? = null, justifyContent: String? = null
+    val components: List<Widget>,
+    val direction: FlexLayout.FlexDirection = FlexLayout.FlexDirection.ROW,
+    key: String? = null,
+    height: String? = null,
+    width: String? = null,
+    id: String = "",
+    classes: Collection<String> = listOf(),
+    alignItems: String? = null,
+    justifyContent: String? = null
 ) : RenderWidget(key, height, width, id, classes, alignItems, justifyContent) {
 
     override fun createElement(): Element<Container> {
@@ -22,8 +28,8 @@ class Container(
             return FlexLayout()
         }
 
-        override fun update() {
-            super.update()
+        override fun refresh() {
+            super.refresh()
             component.setFlexDirection(widget.direction)
         }
 

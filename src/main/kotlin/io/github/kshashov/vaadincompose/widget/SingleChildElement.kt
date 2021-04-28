@@ -16,8 +16,8 @@ abstract class SingleChildElement<WIDGET : Widget>(widget: WIDGET) : Element<WID
         return component
     }
 
-    override fun updateContext(widget: Widget) {
-        super.updateContext(widget)
+    override fun doUpdateContext(widget: Widget) {
+        super.doUpdateContext(widget)
         updateContextChilds(getChild())
     }
 
