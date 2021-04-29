@@ -33,7 +33,7 @@ abstract class StatefulWidget<STATE : StatefulWidget.WidgetState>(key: String? =
 
             // Rebuild context subtree
             // Bring back cached nodes or mount new nodes
-            attachWidget(widget)
+            updateContextChilds(getChild())
 
             // The new render nodes are alrady ready to go but we still need to refresh the old dirty ones
             context.visitNearestElementInheritors(RenderElement::class.java) {
@@ -43,15 +43,39 @@ abstract class StatefulWidget<STATE : StatefulWidget.WidgetState>(key: String? =
                 }
             }
         }
+
+        override fun detach() {
+            super.detach()
+            state.detach();
+        }
+
+        override fun dispose() {
+            super.dispose()
+            state.dispose()
+        }
     }
 
     abstract class WidgetState {
         lateinit var element: StatefulElement<out WidgetState>
         abstract fun build(context: BuildContext): Widget
 
-        fun setState(action: () -> Unit) {
+        protected fun setState(action: () -> Unit) {
             action.invoke()
             element.rebuild()
+        }
+
+        /**
+         * Invoked when the widget is detached from tree but still have a chance to be reused later.
+         */
+        open fun detach() {
+            // Do nothing
+        }
+
+        /**
+         * Invoked after the [detach] method if the widget is completely removed from the hierarchy.
+         */
+        open fun dispose() {
+            // Do nothing
         }
     }
 }

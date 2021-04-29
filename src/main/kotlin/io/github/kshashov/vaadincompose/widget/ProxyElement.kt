@@ -57,9 +57,25 @@ abstract class ProxyElement<WIDGET : Widget>(widget: WIDGET) : Element<WIDGET>(w
         }
 
         // Remove cache keys that are not in a prepopulated set
-        elementsCache.keys.removeIf {
-            actualCacheKey != it
+        elementsCache.entries.removeIf {
+            val check = actualCacheKey != it.key
+            if (check) {
+                it.value.detach()
+                // Give element a chance to be reused later
+                if (shouldKeepDetachedElement(it)) {
+                    return@removeIf false
+                }
+                it.value.dispose()
+            }
+            return@removeIf check
         }
+    }
+
+    /**
+     * Returns true if the element should be stored in the cache to be reused later.
+     */
+    protected open fun shouldKeepDetachedElement(entry: Map.Entry<String, Element<*>>): Boolean {
+        return false
     }
 }
 

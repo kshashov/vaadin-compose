@@ -26,7 +26,7 @@ class Conditional(
      */
     class ConditionalRenderElement(widget: Conditional) : ProxyElement<Conditional>(widget) {
         private var previousCondition: Boolean = widget.condition
-        private var pairHolder: BooleanPairHolder<Element<*>> = BooleanPairHolder()
+        private var pairHolder: BooleanPairHolder<String> = BooleanPairHolder()
 
         /**
          * Saves previous element to [pairHolder] cache.
@@ -37,24 +37,17 @@ class Conditional(
             if (context.childs.isNotEmpty()) {
                 // Update internal element cache for previous condition
                 previousCondition = this.widget.condition
-                pairHolder.putElement(previousCondition, context.childs[0].element)
+                pairHolder.putElement(previousCondition, key(widget, 0))
             }
         }
 
-        /**
-         * Restores element from [pairHolder] cache and puts it into outer [elementsCache] cache.
-         */
-        override fun updateContextChilds(child: Widget) {
+        override fun shouldKeepDetachedElement(entry: Map.Entry<String, Element<*>>): Boolean {
             // If condition is changed
             if (widget.condition != previousCondition) {
-                // Try to populate high level cache with latest element related to the new codition
-                if (pairHolder.containsElement(widget.condition)) {
-                    val element = pairHolder.getElement(widget.condition)!!
-                    elementsCache.putIfAbsent(key(element.widget, 0), element)
-                }
+                // Keep element in cache if it is the latest opposite element
+                return pairHolder.getElement(previousCondition) == entry.key
             }
-
-            super.updateContextChilds(child)
+            return false
         }
 
         override fun getChild() = if (this.widget.condition) this.widget.first else this.widget.second

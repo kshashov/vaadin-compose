@@ -46,6 +46,20 @@ abstract class Element<WIDGET : Widget>(var widget: WIDGET) {
         this.widget = widget as WIDGET;
     }
 
+    /**
+     * Invoked when the element is detached from tree but still stored in cache.
+     */
+    open fun detach() {
+        // Do nothing
+    }
+
+    /**
+     * Invoked after the [detach] method if the element is completely removed from the hierarchy.
+     */
+    open fun dispose() {
+        // Do nothing
+    }
+
     protected open fun onBeforeRender() {
         // Do nothing
     }

@@ -3,7 +3,7 @@ package io.github.kshashov.vaadincompose.widget
 import com.vaadin.flow.component.Component
 import com.vaadin.flow.component.HasComponents
 
-abstract class MultiChildRenderElement<WIDGET, COMPONENT>(widget: WIDGET) : RenderElement<WIDGET, COMPONENT>(widget)
+abstract class HasChildRenderElement<WIDGET, COMPONENT>(widget: WIDGET) : RenderElement<WIDGET, COMPONENT>(widget)
         where WIDGET : RenderWidget, COMPONENT : Component, COMPONENT : HasComponents {
     protected val elementsCache: MutableMap<String, Element<*>> = HashMap()
 
@@ -52,9 +52,25 @@ abstract class MultiChildRenderElement<WIDGET, COMPONENT>(widget: WIDGET) : Rend
         }
 
         // Remove cache keys that are not in a prepopulated set
-        elementsCache.keys.removeIf {
-            !actualCacheKeys.contains(it)
+        elementsCache.entries.removeIf {
+            val check = !actualCacheKeys.contains(it.key)
+            if (check) {
+                it.value.detach()
+                // Give element a chance to be reused later
+                if (shouldKeepDetachedElement(it)) {
+                    return@removeIf false
+                }
+                it.value.dispose()
+            }
+            return@removeIf check
         }
+    }
+
+    /**
+     * Returns true if the element should be stored in the cache to be reused later.
+     */
+    protected open fun shouldKeepDetachedElement(mutableEntry: Map.Entry<String, Element<*>>): Boolean {
+        return false
     }
 
     override fun refreshComponent() {

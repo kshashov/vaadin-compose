@@ -62,6 +62,14 @@ class SingleChildElementTest : Div(), ComposablePage {
             override fun build(context: BuildContext): Widget {
                 return child
             }
+
+            override fun detach() {
+                super.detach()
+            }
+
+            override fun dispose() {
+                super.dispose()
+            }
         }
     }
 }

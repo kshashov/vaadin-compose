@@ -49,16 +49,24 @@ class Todo : Div(), ComposablePage {
                                     height = "100%",
                                     direction = FlexLayout.FlexDirection.COLUMN_REVERSE,
                                     items = this.items,
-                                    render = {
-                                        TodoItemWidget(
-                                                key = it.id.toString(),
-                                                item = it,
-                                                delete = { setState { items.remove(it) } },
-                                                down = { setState { down(it) } },
-                                                up = { setState { up(it) } })
-                                    }
+                                render = {
+                                    TodoItemWidget(
+                                        key = it.id.toString(),
+                                        item = it,
+                                        delete = { setState { items.remove(it) } },
+                                        down = { setState { down(it) } },
+                                        up = { setState { up(it) } })
+                                }
                             )))
 
+        }
+
+        override fun detach() {
+            super.detach()
+        }
+
+        override fun dispose() {
+            super.dispose()
         }
 
         private fun up(it: TodoItem) {
@@ -93,16 +101,25 @@ class Todo : Div(), ComposablePage {
             val down: (item: TodoItem) -> Unit) : StatefulWidget.WidgetState() {
         override fun build(context: BuildContext): Widget {
             return Container(
-                    alignItems = "center",
-                    direction = FlexLayout.FlexDirection.ROW,
-                    classes = listOf("card", "todo-item"),
-                    components = listOf(
-                            Button("x", { delete.invoke(item) }),
-                            Button("\uD83E\uDC17", { down.invoke(item) }),
-                            Button("\uD83E\uDC15", { up.invoke(item) }),
-                            Label(item.text)))
+                alignItems = "center",
+                direction = FlexLayout.FlexDirection.ROW,
+                classes = listOf("card", "todo-item"),
+                components = listOf(
+                    Button("x", { delete.invoke(item) }),
+                    Button("\uD83E\uDC17", { down.invoke(item) }),
+                    Button("\uD83E\uDC15", { up.invoke(item) }),
+                    Label(item.text)
+                )
+            )
         }
 
+        override fun detach() {
+            super.detach()
+        }
+
+        override fun dispose() {
+            super.dispose()
+        }
     }
 }
 

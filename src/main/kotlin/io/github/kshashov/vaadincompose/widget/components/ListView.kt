@@ -2,7 +2,7 @@ package io.github.kshashov.vaadincompose.widget.components
 
 import com.vaadin.flow.component.orderedlayout.FlexLayout
 import io.github.kshashov.vaadincompose.widget.Element
-import io.github.kshashov.vaadincompose.widget.MultiChildRenderElement
+import io.github.kshashov.vaadincompose.widget.HasChildRenderElement
 import io.github.kshashov.vaadincompose.widget.RenderWidget
 import io.github.kshashov.vaadincompose.widget.Widget
 import kotlin.streams.toList
@@ -24,7 +24,7 @@ class ListView<T>(
         return ContainerRenderElement(this)
     }
 
-    class ContainerRenderElement<T>(widget: ListView<T>) : MultiChildRenderElement<ListView<T>, FlexLayout>(widget) {
+    class ContainerRenderElement<T>(widget: ListView<T>) : HasChildRenderElement<ListView<T>, FlexLayout>(widget) {
 
         override fun createComponent(): FlexLayout {
             return FlexLayout()
