@@ -3,9 +3,12 @@ package io.github.kshashov.vaadincompose.widget
 import com.vaadin.flow.component.Component
 import io.github.kshashov.vaadincompose.BuildContext
 
-abstract class SingleChildElement<WIDGET : Widget>(widget: WIDGET) : Element<WIDGET>(widget) {
-    private val elementsCache: MutableMap<String, Element<*>> = HashMap()
-    private lateinit var rendered: Component
+/**
+ * Supposed to be used as a parent class for non-render widgets.
+ * Propagates render shit to the nested widget.
+ */
+abstract class ProxyElement<WIDGET : Widget>(widget: WIDGET) : Element<WIDGET>(widget) {
+    protected val elementsCache: MutableMap<String, Element<*>> = HashMap()
 
     override fun render(context: BuildContext): Component {
         return renderedComponent
@@ -24,9 +27,9 @@ abstract class SingleChildElement<WIDGET : Widget>(widget: WIDGET) : Element<WID
     abstract fun getChild(): Widget
 
     /**
-     * Update context.childs metainfo.
+     * Update context.childs metainfo. Tries to reuse elements for known widget key.
      */
-    private fun updateContextChilds(child: Widget) {
+    protected open fun updateContextChilds(child: Widget) {
         context.childs.clear()
 
         // Store useful cache keys
@@ -42,12 +45,14 @@ abstract class SingleChildElement<WIDGET : Widget>(widget: WIDGET) : Element<WID
             // We shouldn't mount existing element here
             // Just propagate context updating to child
             cachedElement.attachWidget(child)
+            renderedComponent = cachedElement.renderedComponent
             context.childs.add(cachedElement.context)
         } else {
             // Create and mount new element
             // Mount updates the current context childs so we shouldn't do it manually
             val childElement = child.createElement()
-            renderedComponent = childElement.mount(context)
+            childElement.mount(context)
+            renderedComponent = childElement.renderedComponent
             elementsCache[childKey] = childElement
         }
 

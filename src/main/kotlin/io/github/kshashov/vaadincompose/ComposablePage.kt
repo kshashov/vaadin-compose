@@ -13,12 +13,12 @@ interface ComposablePage {
         }
 
         val context = buildContext()
-        val container = build(context)
-
-        add(container.createElement().mount(context))
+        val element = build(context).createElement()
+        element.mount(context)
+        add(element.renderedComponent)
     }
 
-    fun buildContext() = BuildContext()
+    fun buildContext() = BuildContext.root()
 
     fun build(context: BuildContext): Widget
 }

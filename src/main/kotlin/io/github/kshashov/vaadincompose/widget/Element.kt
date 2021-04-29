@@ -11,12 +11,11 @@ abstract class Element<WIDGET : Widget>(var widget: WIDGET) {
      * Adds element to the current build context and populate [renderedComponent] property.
      * Invoked before the first element usage.
      */
-    fun mount(parent: BuildContext): Component {
+    fun mount(parent: BuildContext) {
         attachContext(parent)
         onBeforeRender()
         renderedComponent = render(context)
         onAfterRender()
-        return renderedComponent
     }
 
     /**
@@ -25,7 +24,7 @@ abstract class Element<WIDGET : Widget>(var widget: WIDGET) {
     protected abstract fun render(context: BuildContext): Component
 
     /**
-     * Refreshes element state accoring to a new [widget] info.
+     * Refreshes element state according to a new [widget] info.
      */
     fun attachWidget(widget: Widget) {
         onBeforeWidgetRefresh()

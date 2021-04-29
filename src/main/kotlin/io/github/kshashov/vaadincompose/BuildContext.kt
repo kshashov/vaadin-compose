@@ -4,9 +4,9 @@ import io.github.kshashov.vaadincompose.widget.Element
 import io.github.kshashov.vaadincompose.widget.Widget
 
 class BuildContext(
-        val element: Element<*> = FakeElement(),
-        val childs: MutableList<BuildContext> = mutableListOf(),
-        val parent: BuildContext? = null
+    val element: Element<*>,
+    val childs: MutableList<BuildContext> = mutableListOf(),
+    val parent: BuildContext? = null
 ) {
 
     @Suppress("UNCHECKED_CAST")
@@ -33,7 +33,10 @@ class BuildContext(
     }
 
 
-    class FakeElement() : Element<FakeElement.FakeWidget>(FakeWidget()) {
+    /**
+     * Fake Element that supposed to be used only in the root [BuildContext] node.
+     */
+    class FakeElement : Element<FakeElement.FakeWidget>(FakeWidget()) {
         override fun render(context: BuildContext) = TODO("Not yet implemented")
 
         class FakeWidget : Widget() {
@@ -41,4 +44,7 @@ class BuildContext(
         }
     }
 
+    companion object {
+        fun root(): BuildContext = BuildContext(element = FakeElement())
+    }
 }

@@ -20,7 +20,8 @@ abstract class MultiChildRenderElement<WIDGET, COMPONENT>(widget: WIDGET) : Rend
     }
 
     /**
-     * Update context.childs metainfo
+     * Updates context.childs metainfo.
+     * Puts cached elements to the three or mounts new nodes for unknown child widgets.
      */
     protected open fun updateContextChilds(list: Collection<Widget>) {
         context.childs.clear()

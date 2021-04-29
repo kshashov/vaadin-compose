@@ -9,7 +9,7 @@ abstract class StatelessWidget(key: String? = null) : Widget(key) {
 
     protected abstract fun build(context: BuildContext): Widget
 
-    class StatelessElement(widget: StatelessWidget) : SingleChildElement<StatelessWidget>(widget) {
+    class StatelessElement(widget: StatelessWidget) : ProxyElement<StatelessWidget>(widget) {
 
         override fun getChild(): Widget {
             return widget.build(context)
