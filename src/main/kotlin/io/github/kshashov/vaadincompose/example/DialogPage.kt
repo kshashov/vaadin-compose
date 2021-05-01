@@ -10,11 +10,12 @@ import io.github.kshashov.vaadincompose.widget.StatefulWidget
 import io.github.kshashov.vaadincompose.widget.Widget
 import io.github.kshashov.vaadincompose.widget.components.Button
 import io.github.kshashov.vaadincompose.widget.components.Container
-import io.github.kshashov.vaadincompose.widget.components.Label
+import io.github.kshashov.vaadincompose.widget.components.Dialog
+import io.github.kshashov.vaadincompose.widget.components.HasDialog
 
 @CssImport("./styles/styles.css")
-@Route("counter")
-class Counter : Div(), ComposablePage {
+@Route("dialog")
+class DialogPage : Div(), ComposablePage {
 
     override fun build(context: BuildContext): Widget {
         return MainWidget()
@@ -25,18 +26,22 @@ class Counter : Div(), ComposablePage {
     }
 
     class MainState : StatefulWidget.WidgetState() {
-        private var counter: Int = 0
+        private var show = false;
 
         override fun build(context: BuildContext): Widget {
-            return Container(
+            return HasDialog(
+                child = Container(
                     direction = FlexLayout.FlexDirection.COLUMN,
                     classes = listOf("main-widget"),
                     childs = listOf(
-                        Label("Counter: $counter"),
-                        Button("+1", {
-                            setState { counter++ }
-                        })
-                    ))
+                        Button("open", { setState { show = true } })
+                    )
+                ),
+                dialog = Dialog(
+                    Button("close", { setState { show = false } }),
+                    show = show
+                )
+            )
         }
 
     }

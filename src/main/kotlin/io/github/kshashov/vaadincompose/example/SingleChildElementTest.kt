@@ -31,7 +31,7 @@ class SingleChildElementTest : Div(), ComposablePage {
             return Container(
                     direction = FlexLayout.FlexDirection.COLUMN,
                     classes = listOf("main-widget"),
-                    components = listOf(
+                    childs = listOf(
                         if (switcher1) Wrapper(Label("True")) else Wrapper(Text("False")),
                         Button("Switch stateless", {
                             setState { switcher1 = !switcher1 }

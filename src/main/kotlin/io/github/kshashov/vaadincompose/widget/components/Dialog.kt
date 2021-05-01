@@ -1,14 +1,14 @@
 package io.github.kshashov.vaadincompose.widget.components
 
-import com.vaadin.flow.component.orderedlayout.FlexLayout
 import io.github.kshashov.vaadincompose.widget.Element
 import io.github.kshashov.vaadincompose.widget.HasChildRenderElement
 import io.github.kshashov.vaadincompose.widget.RenderWidget
 import io.github.kshashov.vaadincompose.widget.Widget
+import com.vaadin.flow.component.dialog.Dialog as VaadinDialog
 
-class Container(
-    val childs: List<Widget>,
-    val direction: FlexLayout.FlexDirection = FlexLayout.FlexDirection.ROW,
+class Dialog(
+    val child: Widget,
+    val show: Boolean,
     key: String? = null,
     height: String? = null,
     width: String? = null,
@@ -18,21 +18,21 @@ class Container(
     justifyContent: String? = null
 ) : RenderWidget(key, height, width, id, classes, alignItems, justifyContent) {
 
-    override fun createElement(): Element<Container> {
-        return ContainerRenderElement(this)
+    override fun createElement(): Element<Dialog> {
+        return DialogRenderElement(this)
     }
 
-    class ContainerRenderElement(widget: Container) : HasChildRenderElement<Container, FlexLayout>(widget) {
+    class DialogRenderElement(widget: Dialog) : HasChildRenderElement<Dialog, VaadinDialog>(widget) {
 
-        override fun createComponent(): FlexLayout {
-            return FlexLayout()
+        override fun createComponent(): VaadinDialog {
+            return VaadinDialog()
         }
 
         override fun refreshComponent() {
             super.refreshComponent()
-            component.setFlexDirection(widget.direction)
+            component.isOpened = widget.show
         }
 
-        override fun getChilds() = this.widget.childs
+        override fun getChilds() = listOf(this.widget.child)
     }
 }

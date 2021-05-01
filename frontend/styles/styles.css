@@ -11,3 +11,9 @@
 .todo-item label {
     padding-left: 10px;
 }
+
+.v-debug-button {
+    position: absolute;
+    right: 20px;
+    bottom: 20px;
+}

@@ -32,19 +32,20 @@ class Todo : Div(), ComposablePage {
                     height = "100%",
                     direction = FlexLayout.FlexDirection.COLUMN,
                     classes = listOf("main-widget"),
-                    components = listOf(
-                            Container(
-                                    alignItems = "baseline",
-                                    direction = FlexLayout.FlexDirection.ROW,
-                                    components = listOf(
-                                            Text(label = "New Item", text = this.text,
-                                                    onChanged = { this.text = it }),
-                                            Button("Add", {
-                                                setState {
-                                                    items.add(TodoItem(counter++, text))
-                                                    text = ""
-                                                }
-                                            }))),
+                    childs = listOf(
+                        Container(
+                            alignItems = "baseline",
+                            direction = FlexLayout.FlexDirection.ROW,
+                            childs = listOf(
+                                Text(label = "New Item", text = this.text,
+                                    onChanged = { this.text = it }),
+                                Button("Add", {
+                                    setState {
+                                        items.add(TodoItem(counter++, text))
+                                        text = ""
+                                    }
+                                })
+                            )),
                             ListView(
                                     height = "100%",
                                     direction = FlexLayout.FlexDirection.COLUMN_REVERSE,
@@ -104,7 +105,7 @@ class Todo : Div(), ComposablePage {
                 alignItems = "center",
                 direction = FlexLayout.FlexDirection.ROW,
                 classes = listOf("card", "todo-item"),
-                components = listOf(
+                childs = listOf(
                     Button("x", { delete.invoke(item) }),
                     Button("\uD83E\uDC17", { down.invoke(item) }),
                     Button("\uD83E\uDC15", { up.invoke(item) }),

@@ -81,9 +81,18 @@ abstract class HasChildRenderElement<WIDGET, COMPONENT>(widget: WIDGET) : Render
 
         // Populate component according actual childs
         for (childContext in context.childs) {
-            val childComponent = childContext.element.renderedComponent
-            component.add(childComponent)
+            if (shouldAddElement(childContext.element)) {
+                val childComponent = childContext.element.renderedComponent
+                component.add(childComponent)
+            }
         }
+    }
+
+    /**
+     * Returns true if the rendered component should be added to the layout.
+     */
+    protected open fun shouldAddElement(element: Element<*>): Boolean {
+        return true
     }
 }
 
