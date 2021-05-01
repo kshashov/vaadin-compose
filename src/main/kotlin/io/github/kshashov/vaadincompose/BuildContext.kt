@@ -8,7 +8,6 @@ class BuildContext(
     val childs: MutableList<BuildContext> = mutableListOf(),
     val parent: BuildContext? = null
 ) {
-
     @Suppress("UNCHECKED_CAST")
     fun <T> findNearestElementAncestor(type: Class<T>): T? {
         if (type.isAssignableFrom(element.javaClass)) {
@@ -31,7 +30,6 @@ class BuildContext(
             child.visitNearestElementInheritors(type, action)
         }
     }
-
 
     /**
      * Fake Element that supposed to be used only in the root [BuildContext] node.

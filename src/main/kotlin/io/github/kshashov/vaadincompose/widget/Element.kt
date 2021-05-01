@@ -5,7 +5,11 @@ import io.github.kshashov.vaadincompose.BuildContext
 
 abstract class Element<WIDGET : Widget>(var widget: WIDGET) {
     lateinit var context: BuildContext
+        private set
     lateinit var renderedComponent: Component
+        protected set
+    var state: State = State.CREATED
+        private set
 
     /**
      * Adds element to the current build context and populate [renderedComponent] property.
@@ -16,6 +20,7 @@ abstract class Element<WIDGET : Widget>(var widget: WIDGET) {
         onBeforeRender()
         renderedComponent = render(context)
         onAfterRender()
+        state = State.MOUNTED
     }
 
     /**
@@ -27,9 +32,14 @@ abstract class Element<WIDGET : Widget>(var widget: WIDGET) {
      * Refreshes element state according to a new [widget] info.
      */
     fun attachWidget(widget: Widget) {
+        if (!state.equals(State.DETACHED) && !state.equals(State.MOUNTED)) {
+            throw IllegalStateException("Element State should be DETACHED or MOUNTED before re-attach")
+        }
+        state = State.ATTACHED
         onBeforeWidgetRefresh()
         doAttachWidget(widget)
         onAfterWidgetRefresh()
+        state = State.MOUNTED
     }
 
     protected open fun key(widget: Widget, index: Int): String {
@@ -37,8 +47,12 @@ abstract class Element<WIDGET : Widget>(var widget: WIDGET) {
     }
 
     private fun attachContext(parent: BuildContext) {
+        if (!state.equals(State.CREATED)) {
+            throw IllegalStateException("Element State should be CREATED before first attach")
+        }
         context = BuildContext(this, parent = parent)
         parent.childs.add(context)
+        state = State.ATTACHED
     }
 
     @Suppress("UNCHECKED_CAST")
@@ -50,14 +64,20 @@ abstract class Element<WIDGET : Widget>(var widget: WIDGET) {
      * Invoked when the element is detached from tree but still stored in cache.
      */
     open fun detach() {
-        // Do nothing
+        if (!state.equals(State.MOUNTED)) {
+            throw IllegalStateException("Element State should be MOUNTED before detach")
+        }
+        state = State.DETACHED
     }
 
     /**
      * Invoked after the [detach] method if the element is completely removed from the hierarchy.
      */
     open fun dispose() {
-        // Do nothing
+        if (!state.equals(State.DETACHED)) {
+            throw IllegalStateException("Element State should be DETACHED before detach")
+        }
+        state = State.DISPOSED
     }
 
     protected open fun onBeforeRender() {
@@ -74,5 +94,13 @@ abstract class Element<WIDGET : Widget>(var widget: WIDGET) {
 
     protected open fun onAfterWidgetRefresh() {
         // Do nothing
+    }
+
+    enum class State {
+        CREATED,
+        ATTACHED,
+        MOUNTED,
+        DETACHED,
+        DISPOSED
     }
 }

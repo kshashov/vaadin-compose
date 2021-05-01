@@ -11,15 +11,15 @@ abstract class StatefulWidget<STATE : StatefulWidget.WidgetState>(key: String? =
 
     class StatefulElement<STATE : WidgetState>(widget: StatefulWidget<STATE>) :
         ProxyElement<StatefulWidget<STATE>>(widget) {
-        private var state: STATE = widget.createState()
+        private var widgetState: STATE = widget.createState()
 
         override fun onAfterRender() {
             super.onAfterRender()
-            state.element = this
+            widgetState.element = this
         }
 
         override fun getChild(): Widget {
-            return state.build(context)
+            return widgetState.build(context)
         }
 
         /**
@@ -46,12 +46,12 @@ abstract class StatefulWidget<STATE : StatefulWidget.WidgetState>(key: String? =
 
         override fun detach() {
             super.detach()
-            state.detach();
+            widgetState.detach();
         }
 
         override fun dispose() {
             super.dispose()
-            state.dispose()
+            widgetState.dispose()
         }
     }
 
