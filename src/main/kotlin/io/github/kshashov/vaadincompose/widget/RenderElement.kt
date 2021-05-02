@@ -1,6 +1,7 @@
 package io.github.kshashov.vaadincompose.widget
 
 import com.vaadin.flow.component.Component
+import com.vaadin.flow.component.Tag
 import com.vaadin.flow.dom.ElementConstants
 import io.github.kshashov.vaadincompose.BuildContext
 
@@ -32,5 +33,12 @@ abstract class RenderElement<WIDGET : RenderWidget<COMPONENT>, COMPONENT : Compo
         dom.style.set("justify-content", widget.justifyContent)
 
         widget.postProcess?.invoke(component)
+    }
+
+    @Tag("v-empty")
+    class EmptyWidget : Component()
+
+    companion object {
+        val EMPTY_WIDGET = EmptyWidget()
     }
 }

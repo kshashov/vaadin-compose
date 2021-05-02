@@ -8,7 +8,7 @@ import com.vaadin.flow.component.button.Button as VaadinButton
 
 class Button(
     val text: String = "",
-    val action: () -> Unit = {},
+    val action: (() -> Unit)? = null,
     key: String? = null,
     height: String? = null,
     width: String? = null,
@@ -44,7 +44,11 @@ class Button(
 
             reg?.remove()
             component.text = widget.text
-            reg = component.addClickListener { widget.action.invoke() }
+
+            val action = widget.action
+            if (action != null) {
+                reg = component.addClickListener { action.invoke() }
+            }
         }
     }
 }

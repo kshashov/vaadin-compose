@@ -4,11 +4,15 @@ import com.vaadin.flow.component.Component
 import com.vaadin.flow.component.HasComponents
 import com.vaadin.flow.component.button.Button
 import com.vaadin.flow.component.dialog.Dialog
+import com.vaadin.flow.component.grid.Grid
 import com.vaadin.flow.component.orderedlayout.VerticalLayout
+import com.vaadin.flow.component.textfield.TextField
 import com.vaadin.flow.component.treegrid.TreeGrid
 import io.github.kshashov.vaadincompose.widget.Widget
 import io.github.kshashov.vaadincompose.widget.components.Label
 import io.github.kshashov.vaadincompose.widget.components.SplitLayout
+import io.github.kshashov.vaadincompose.widget.components.Table
+import io.github.kshashov.vaadincompose.widget.components.TableColumn
 import javax.annotation.PostConstruct
 
 
@@ -22,11 +26,18 @@ interface ComposablePage {
 
         val context = buildContext()
 
+        var grid = Grid<BuildContext>()
+        grid.addComponentColumn {
+            TextField(it.element.javaClass.toString())
+        }
+
+        grid.setItems(listOf(context))
+
 
         val element = if (isDebug())
             SplitLayout(
                 primary = build(context),
-                secondary = debugWidget()
+                secondary = debugWidget(context)
             ).createElement()
         else
             build(context).createElement()
@@ -37,11 +48,21 @@ interface ComposablePage {
         return context
     }
 
-    fun debugWidget(): Widget {
-        return Label("TODO")
+    fun debugWidget(context: BuildContext): Widget {
+        return Table(
+            items = listOf(context), columns = listOf(
+                TableColumn(renderer = { it.element.state.toString() }, header = "State"),
+                TableColumn(builder = { item ->
+                    Label(
+                        item.element.javaClass.simpleName,
+                        postProcess = { it.style.set("font-weight", "bold") })
+                }, header = "Element"),
+                TableColumn(renderer = { item -> item.element.widget.javaClass.simpleName }, header = "Widget")
+            )
+        )
     }
 
-    fun isDebug() = true
+    fun isDebug() = false
 
     fun dispose(context: BuildContext) {
         context.dispose()
