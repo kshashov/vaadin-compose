@@ -19,21 +19,21 @@ class SingleChildElementTest : Div(), ComposablePage {
         return MainWidget()
     }
 
-    class MainWidget : StatefulWidget<MainState>() {
+    class MainWidget(key: String? = null) : StatefulWidget(key) {
         override fun createState() = MainState()
     }
 
-    class MainState : StatefulWidget.WidgetState() {
+    class MainState : StatefulWidget.WidgetState<MainWidget>() {
         private var switcher1: Boolean = false
         private var switcher2: Boolean = false
 
         override fun build(context: BuildContext): Widget {
             return Container(
-                    direction = FlexLayout.FlexDirection.COLUMN,
-                    classes = listOf("main-widget"),
-                    childs = listOf(
-                        if (switcher1) Wrapper(Label("True")) else Wrapper(Text("False")),
-                        Button("Switch stateless", {
+                direction = FlexLayout.FlexDirection.COLUMN,
+                classes = listOf("main-widget"),
+                childs = listOf(
+                    if (switcher1) Wrapper(Label("True")) else Wrapper(Text("False")),
+                    Button("Switch stateless", {
                             setState { switcher1 = !switcher1 }
                         }),
                         Conditional(
@@ -54,11 +54,11 @@ class SingleChildElementTest : Div(), ComposablePage {
         }
     }
 
-    class Wrapper2(val child: Widget, key: String? = null) : StatefulWidget<Wrapper2.Wrapper2State>(key) {
+    class Wrapper2(val child: Widget, key: String? = null) : StatefulWidget(key) {
 
         override fun createState() = Wrapper2State(child)
 
-        class Wrapper2State(private val child: Widget) : WidgetState() {
+        class Wrapper2State(private val child: Widget) : WidgetState<Wrapper2>() {
             override fun build(context: BuildContext): Widget {
                 return child
             }

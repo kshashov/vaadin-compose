@@ -16,12 +16,26 @@ abstract class ProxyElement<WIDGET : Widget>(widget: WIDGET) : Element<WIDGET>(w
 
     override fun onBeforeRender() {
         super.onBeforeRender()
+        init()
         updateContextChilds(getChild())
     }
 
     override fun onAfterWidgetRefresh() {
         super.onAfterWidgetRefresh()
+        didUpdateWidget()
         updateContextChilds(getChild())
+    }
+
+    /**
+     * Invoked before first context build.
+     */
+    protected open fun init() {
+    }
+
+    /**
+     * Invoked before context updating.
+     */
+    protected open fun didUpdateWidget() {
     }
 
     abstract fun getChild(): Widget

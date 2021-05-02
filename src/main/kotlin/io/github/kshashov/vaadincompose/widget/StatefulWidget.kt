@@ -2,24 +2,34 @@ package io.github.kshashov.vaadincompose.widget
 
 import io.github.kshashov.vaadincompose.BuildContext
 
-abstract class StatefulWidget<STATE : StatefulWidget.WidgetState>(key: String? = null) : Widget(key) {
-    override fun createElement(): Element<StatefulWidget<STATE>> {
+abstract class StatefulWidget(key: String? = null) : Widget(key) {
+    override fun createElement(): Element<StatefulWidget> {
         return StatefulElement(this)
     }
 
-    abstract fun createState(): STATE
+    abstract fun createState(): WidgetState<*>
 
-    class StatefulElement<STATE : WidgetState>(widget: StatefulWidget<STATE>) :
-        ProxyElement<StatefulWidget<STATE>>(widget) {
-        private var widgetState: STATE = widget.createState()
+    class StatefulElement(widget: StatefulWidget) : ProxyElement<StatefulWidget>(widget) {
+        private var widgetState: WidgetState<*> = widget.createState()
+        private var oldWidget: StatefulWidget? = null
 
-        override fun onAfterRender() {
-            super.onAfterRender()
-            widgetState.element = this
+        override fun onBeforeWidgetRefresh() {
+            super.onBeforeWidgetRefresh()
+            oldWidget = widget
         }
 
         override fun getChild(): Widget {
             return widgetState.build(context)
+        }
+
+        override fun init() {
+            widgetState.element = this
+            widgetState.initState()
+        }
+
+        @Suppress("UNCHECKED_CAST")
+        override fun didUpdateWidget() {
+            widgetState.didUpdateWidget(oldWidget!!)
         }
 
         /**
@@ -55,8 +65,26 @@ abstract class StatefulWidget<STATE : StatefulWidget.WidgetState>(key: String? =
         }
     }
 
-    abstract class WidgetState {
-        lateinit var element: StatefulElement<out WidgetState>
+    abstract class WidgetState<WIDGET : StatefulWidget> {
+        internal lateinit var element: StatefulElement
+        protected lateinit var widget: WIDGET
+
+        /**
+         * Invoked before first state using.
+         */
+        @Suppress("UNCHECKED_CAST")
+        open fun initState() {
+            this.widget = element.widget as WIDGET
+        }
+
+        /**
+         * Invoked after widget instance has been updated.
+         */
+        @Suppress("UNCHECKED_CAST")
+        open fun didUpdateWidget(oldWidget: StatefulWidget) {
+            this.widget = element.widget as WIDGET
+        }
+
         abstract fun build(context: BuildContext): Widget
 
         protected fun setState(action: () -> Unit) {

@@ -9,15 +9,18 @@ class BuildContext(
     val parent: BuildContext? = null
 ) {
     @Suppress("UNCHECKED_CAST")
-    fun <T> findNearestElementAncestor(type: Class<T>): T? {
-        if (type.isAssignableFrom(element.javaClass)) {
-            return element as T
+    fun <T : Element<*>> findNearestElementAncestor(type: Class<T>): T? {
+        return findNearestElementAncestor {
+            type.isAssignableFrom(it.javaClass)
+        } as T?
+    }
+
+    fun findNearestElementAncestor(filter: (element: Element<*>) -> Boolean): Element<*>? {
+        if (filter.invoke(element)) {
+            return element
         }
 
-        if (parent == null) {
-            return null
-        }
-        return parent.findNearestElementAncestor(type)
+        return parent?.findNearestElementAncestor(filter)
     }
 
     @Suppress("UNCHECKED_CAST")
@@ -29,6 +32,13 @@ class BuildContext(
         for (child in childs) {
             child.visitNearestElementInheritors(type, action)
         }
+    }
+
+    fun dispose() {
+        for (context in childs) {
+            context.dispose()
+        }
+        element.dispose()
     }
 
     /**

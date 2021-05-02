@@ -6,110 +6,84 @@ import com.vaadin.flow.component.orderedlayout.FlexLayout
 import com.vaadin.flow.router.Route
 import io.github.kshashov.vaadincompose.BuildContext
 import io.github.kshashov.vaadincompose.ComposablePage
-import io.github.kshashov.vaadincompose.widget.StatefulWidget
-import io.github.kshashov.vaadincompose.widget.Widget
+import io.github.kshashov.vaadincompose.widget.*
 import io.github.kshashov.vaadincompose.widget.components.*
+import io.reactivex.rxjava3.subjects.BehaviorSubject
 
 @CssImport("./styles/styles.css")
 @Route("")
 class Todo : Div(), ComposablePage {
 
     override fun build(context: BuildContext): Widget {
-        return MainWidget()
+        return Provider(child = MainWidget(), service = TodoBloc(ArrayList()))
     }
 
-    class MainWidget : StatefulWidget<MainState>() {
-        override fun createState() = MainState()
-    }
-
-    class MainState : StatefulWidget.WidgetState() {
-        private var items: MutableList<TodoItem> = mutableListOf()
-        private var counter: Int = 0;
+    class MainWidget(key: String? = null) : StatelessWidget(key) {
         private var text: String = ""
 
         override fun build(context: BuildContext): Widget {
+            val bloc: TodoBloc = Provider.of(TodoBloc::class.java, context)!!
+
             return Container(
-                    height = "100%",
-                    direction = FlexLayout.FlexDirection.COLUMN,
-                    classes = listOf("main-widget"),
-                    childs = listOf(
-                        Container(
-                            alignItems = "baseline",
-                            direction = FlexLayout.FlexDirection.ROW,
-                            childs = listOf(
-                                Text(label = "New Item", text = this.text,
-                                    onChanged = { this.text = it }),
-                                Button("Add", {
-                                    setState {
-                                        items.add(TodoItem(counter++, text))
-                                        text = ""
-                                    }
-                                })
-                            )),
+                height = "100%",
+                direction = FlexLayout.FlexDirection.COLUMN,
+                classes = listOf("main-widget"),
+                childs = listOf(
+                    Container(
+                        alignItems = "baseline",
+                        direction = FlexLayout.FlexDirection.ROW,
+                        childs = listOf(
+                            StreamConsumer(
+                                stream = bloc.texts,
+                                builder = { text ->
+                                    this.text = text
+                                    return@StreamConsumer Text(
+                                        label = "New Item",
+                                        text = text,
+                                        onChanged = { this.text = it })
+                                }),
+                            Button("Add", {
+                                bloc.add(text)
+                            })
+                        )
+                    ),
+                    StreamConsumer(
+                        stream = bloc.todos,
+                        builder = { items ->
                             ListView(
-                                    height = "100%",
-                                    direction = FlexLayout.FlexDirection.COLUMN_REVERSE,
-                                    items = this.items,
-                                render = {
-                                    TodoItemWidget(
-                                        key = it.id.toString(),
-                                        item = it,
-                                        delete = { setState { items.remove(it) } },
-                                        down = { setState { down(it) } },
-                                        up = { setState { up(it) } })
-                                }
-                            )))
+                                height = "100%",
+                                direction = FlexLayout.FlexDirection.COLUMN_REVERSE,
+                                items = items,
+                                render = { TodoItemWidget(item = it, key = it.id.toString()) }
+                            )
+                        })
+                )
+            )
 
-        }
-
-        override fun detach() {
-            super.detach()
-        }
-
-        override fun dispose() {
-            super.dispose()
-        }
-
-        private fun up(it: TodoItem) {
-            val ind = items.indexOf(it)
-            if (ind == (items.size - 1)) return
-            items.add(ind + 1, items.removeAt(ind))
-        }
-
-        private fun down(it: TodoItem) {
-            val ind = items.indexOf(it)
-            if (ind == 0) return
-            items.add(ind - 1, items.removeAt(ind))
         }
     }
 
     class TodoItem(var id: Int, var text: String)
 
-    class TodoItemWidget(
-            key: String? = null,
-            val item: TodoItem,
-            val delete: (item: TodoItem) -> Unit,
-            val up: (item: TodoItem) -> Unit,
-            val down: (item: TodoItem) -> Unit) : StatefulWidget<TodoItemWidgetState>(key) {
-        override fun createState(): TodoItemWidgetState = TodoItemWidgetState(item, delete, up, down)
+    class TodoItemWidget(val item: TodoItem, key: String? = null) : StatefulWidget(key) {
+        override fun createState(): TodoItemWidgetState = TodoItemWidgetState()
 
     }
 
-    class TodoItemWidgetState(
-            val item: TodoItem,
-            val delete: (item: TodoItem) -> Unit,
-            val up: (item: TodoItem) -> Unit,
-            val down: (item: TodoItem) -> Unit) : StatefulWidget.WidgetState() {
+    class TodoItemWidgetState : StatefulWidget.WidgetState<TodoItemWidget>() {
+
         override fun build(context: BuildContext): Widget {
+            val bloc: TodoBloc = Provider.of(TodoBloc::class.java, context)!!
+
             return Container(
                 alignItems = "center",
                 direction = FlexLayout.FlexDirection.ROW,
                 classes = listOf("card", "todo-item"),
                 childs = listOf(
-                    Button("x", { delete.invoke(item) }),
-                    Button("\uD83E\uDC17", { down.invoke(item) }),
-                    Button("\uD83E\uDC15", { up.invoke(item) }),
-                    Label(item.text)
+                    Button("x", { bloc.remove(widget.item) }),
+                    Button("\uD83E\uDC17", { bloc.down(widget.item) }),
+                    Button("\uD83E\uDC15", { bloc.up(widget.item) }),
+                    Label(widget.item.text)
                 )
             )
         }
@@ -120,6 +94,37 @@ class Todo : Div(), ComposablePage {
 
         override fun dispose() {
             super.dispose()
+        }
+    }
+
+    class TodoBloc(private val items: MutableList<TodoItem>) {
+        private var counter: Int = 0
+        val todos: BehaviorSubject<MutableList<TodoItem>> = BehaviorSubject.createDefault(items)
+        val texts: BehaviorSubject<String> = BehaviorSubject.createDefault("")
+
+        fun add(text: String) {
+            items.add(TodoItem(id = counter++, text))
+            this.texts.onNext("")
+            todos.onNext(items)
+        }
+
+        fun up(it: TodoItem) {
+            val ind = items.indexOf(it)
+            if (ind == (items.size - 1)) return
+            items.add(ind + 1, items.removeAt(ind))
+            todos.onNext(items)
+        }
+
+        fun down(it: TodoItem) {
+            val ind = items.indexOf(it)
+            if (ind == 0) return
+            items.add(ind - 1, items.removeAt(ind))
+            todos.onNext(items)
+        }
+
+        fun remove(it: TodoItem) {
+            items.remove(it)
+            todos.onNext(items)
         }
     }
 }

@@ -20,21 +20,21 @@ class Counter : Div(), ComposablePage {
         return MainWidget()
     }
 
-    class MainWidget : StatefulWidget<MainState>() {
+    class MainWidget : StatefulWidget() {
         override fun createState() = MainState()
     }
 
-    class MainState : StatefulWidget.WidgetState() {
+    class MainState : StatefulWidget.WidgetState<MainWidget>() {
         private var counter: Int = 0
 
         override fun build(context: BuildContext): Widget {
             return Container(
-                    direction = FlexLayout.FlexDirection.COLUMN,
-                    classes = listOf("main-widget"),
-                    childs = listOf(
-                        Label("Counter: $counter"),
-                        Button("+1", {
-                            setState { counter++ }
+                direction = FlexLayout.FlexDirection.COLUMN,
+                classes = listOf("main-widget"),
+                childs = listOf(
+                    Label("Counter: $counter"),
+                    Button("+1", {
+                        setState { counter++ }
                         })
                     ))
         }

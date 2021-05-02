@@ -12,7 +12,7 @@ import javax.annotation.PostConstruct
 interface ComposablePage {
 
     @PostConstruct
-    fun render() {
+    fun init(): BuildContext {
         if (this !is HasComponents) {
             throw NotImplementedError("ComposablePage is only supportted for HasComponents")
         }
@@ -22,6 +22,12 @@ interface ComposablePage {
         element.mount(context)
         add(element.renderedComponent)
         add(debugButton(context))
+
+        return context
+    }
+
+    fun dispose(context: BuildContext) {
+        context.dispose()
     }
 
     fun buildContext() = BuildContext.root()
