@@ -3,8 +3,8 @@ package io.github.kshashov.vaadincompose.widget
 import com.vaadin.flow.component.Component
 import com.vaadin.flow.component.HasComponents
 
-abstract class HasChildRenderElement<WIDGET, COMPONENT>(widget: WIDGET) : RenderElement<WIDGET, COMPONENT>(widget)
-        where WIDGET : RenderWidget<COMPONENT>, COMPONENT : Component, COMPONENT : HasComponents {
+abstract class HasChildRenderElement<WIDGET : RenderWidget<COMPONENT>, COMPONENT : Component>(widget: WIDGET) :
+    RenderElement<WIDGET, COMPONENT>(widget) {
     protected val elementsCache: MutableMap<String, Element<*>> = HashMap()
 
     protected abstract fun getChilds(): Collection<Widget>
@@ -77,15 +77,23 @@ abstract class HasChildRenderElement<WIDGET, COMPONENT>(widget: WIDGET) : Render
         super.refreshComponent()
 
         // TODO do not remove component childs
-        component.removeAll()
+        doRemoveAll()
 
         // Populate component according actual childs
         for (childContext in context.childs) {
             if (shouldAddElement(childContext.element)) {
                 val childComponent = childContext.element.renderedComponent
-                component.add(childComponent)
+                doAdd(childComponent)
             }
         }
+    }
+
+    protected open fun doRemoveAll() {
+        (component as HasComponents).removeAll()
+    }
+
+    protected open fun doAdd(child: Component) {
+        (component as HasComponents).add(child)
     }
 
     /**

@@ -7,24 +7,41 @@ import com.vaadin.flow.component.dialog.Dialog
 import com.vaadin.flow.component.orderedlayout.VerticalLayout
 import com.vaadin.flow.component.treegrid.TreeGrid
 import io.github.kshashov.vaadincompose.widget.Widget
+import io.github.kshashov.vaadincompose.widget.components.Label
+import io.github.kshashov.vaadincompose.widget.components.SplitLayout
 import javax.annotation.PostConstruct
+
 
 interface ComposablePage {
 
     @PostConstruct
     fun init(): BuildContext {
         if (this !is HasComponents) {
-            throw NotImplementedError("ComposablePage is only supportted for HasComponents")
+            throw NotImplementedError("ComposablePage is only supported for HasComponents")
         }
 
         val context = buildContext()
-        val element = build(context).createElement()
+
+
+        val element = if (isDebug())
+            SplitLayout(
+                primary = build(context),
+                secondary = debugWidget()
+            ).createElement()
+        else
+            build(context).createElement()
+
         element.mount(context)
         add(element.renderedComponent)
-        add(debugButton(context))
 
         return context
     }
+
+    fun debugWidget(): Widget {
+        return Label("TODO")
+    }
+
+    fun isDebug() = true
 
     fun dispose(context: BuildContext) {
         context.dispose()
