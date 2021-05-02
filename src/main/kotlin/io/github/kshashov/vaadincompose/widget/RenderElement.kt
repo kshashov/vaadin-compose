@@ -4,7 +4,8 @@ import com.vaadin.flow.component.Component
 import com.vaadin.flow.dom.ElementConstants
 import io.github.kshashov.vaadincompose.BuildContext
 
-abstract class RenderElement<WIDGET : RenderWidget, COMPONENT : Component>(widget: WIDGET) : Element<WIDGET>(widget) {
+abstract class RenderElement<WIDGET : RenderWidget<COMPONENT>, COMPONENT : Component>(widget: WIDGET) :
+    Element<WIDGET>(widget) {
     protected lateinit var component: COMPONENT
     var dirty: Boolean = false
 
@@ -29,5 +30,7 @@ abstract class RenderElement<WIDGET : RenderWidget, COMPONENT : Component>(widge
         dom.style.set(ElementConstants.STYLE_WIDTH, widget.width)
         dom.style.set("align-items", widget.alignItems)
         dom.style.set("justify-content", widget.justifyContent)
+
+        widget.postProcess?.invoke(component)
     }
 }

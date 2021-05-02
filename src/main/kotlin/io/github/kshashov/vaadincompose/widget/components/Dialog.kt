@@ -15,8 +15,9 @@ class Dialog(
     id: String = "",
     classes: Collection<String> = listOf(),
     alignItems: String? = null,
-    justifyContent: String? = null
-) : RenderWidget(key, height, width, id, classes, alignItems, justifyContent) {
+    justifyContent: String? = null,
+    postProcess: ((VaadinDialog) -> Unit)? = null
+) : RenderWidget<VaadinDialog>(key, height, width, id, classes, alignItems, justifyContent, postProcess) {
 
     override fun createElement(): Element<Dialog> {
         return DialogRenderElement(this)

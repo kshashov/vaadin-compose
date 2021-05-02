@@ -32,11 +32,13 @@ class Counter : Div(), ComposablePage {
                 direction = FlexLayout.FlexDirection.COLUMN,
                 classes = listOf("main-widget"),
                 childs = listOf(
-                    Label("Counter: $counter"),
+                    Label("Counter: $counter",
+                        postProcess = { it.element.style.set("font-weight", "bold") }),
                     Button("+1", {
                         setState { counter++ }
-                        })
-                    ))
+                    })
+                )
+            )
         }
 
     }

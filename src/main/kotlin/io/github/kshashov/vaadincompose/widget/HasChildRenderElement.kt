@@ -4,7 +4,7 @@ import com.vaadin.flow.component.Component
 import com.vaadin.flow.component.HasComponents
 
 abstract class HasChildRenderElement<WIDGET, COMPONENT>(widget: WIDGET) : RenderElement<WIDGET, COMPONENT>(widget)
-        where WIDGET : RenderWidget, COMPONENT : Component, COMPONENT : HasComponents {
+        where WIDGET : RenderWidget<COMPONENT>, COMPONENT : Component, COMPONENT : HasComponents {
     protected val elementsCache: MutableMap<String, Element<*>> = HashMap()
 
     protected abstract fun getChilds(): Collection<Widget>

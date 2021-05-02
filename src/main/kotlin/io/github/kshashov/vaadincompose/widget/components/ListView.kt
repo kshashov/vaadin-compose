@@ -17,8 +17,9 @@ class ListView<T>(
     id: String = "",
     classes: Collection<String> = listOf(),
     alignItems: String? = null,
-    justifyContent: String? = null
-) : RenderWidget(key, height, width, id, classes, alignItems, justifyContent) {
+    justifyContent: String? = null,
+    postProcess: ((FlexLayout) -> Unit)? = null
+) : RenderWidget<FlexLayout>(key, height, width, id, classes, alignItems, justifyContent, postProcess) {
 
     override fun createElement(): Element<ListView<T>> {
         return ContainerRenderElement(this)

@@ -3,6 +3,7 @@ package io.github.kshashov.vaadincompose.widget.components
 import io.github.kshashov.vaadincompose.widget.Element
 import io.github.kshashov.vaadincompose.widget.RenderElement
 import io.github.kshashov.vaadincompose.widget.RenderWidget
+import com.vaadin.flow.component.html.Label as VaadinLabel
 
 class Label(
     val text: String = "",
@@ -12,16 +13,17 @@ class Label(
     id: String = "",
     classes: Collection<String> = listOf(),
     alignItems: String? = null,
-    justifyContent: String? = null
-) : RenderWidget(key, height, width, id, classes, alignItems, justifyContent) {
+    justifyContent: String? = null,
+    postProcess: ((VaadinLabel) -> Unit)? = null
+) : RenderWidget<VaadinLabel>(key, height, width, id, classes, alignItems, justifyContent, postProcess) {
 
     override fun createElement(): Element<Label> {
         return LabelRenderElement(this)
     }
 
-    class LabelRenderElement(widget: Label) : RenderElement<Label, com.vaadin.flow.component.html.Label>(widget) {
-        override fun createComponent(): com.vaadin.flow.component.html.Label {
-            return com.vaadin.flow.component.html.Label()
+    class LabelRenderElement(widget: Label) : RenderElement<Label, VaadinLabel>(widget) {
+        override fun createComponent(): VaadinLabel {
+            return VaadinLabel()
         }
 
         override fun refreshComponent() {

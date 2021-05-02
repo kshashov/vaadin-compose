@@ -16,8 +16,9 @@ class Text(
     id: String = "",
     classes: Collection<String> = listOf(),
     alignItems: String? = null,
-    justifyContent: String? = null
-) : RenderWidget(key, height, width, id, classes, alignItems, justifyContent) {
+    justifyContent: String? = null,
+    postProcess: ((TextField) -> Unit)? = null
+) : RenderWidget<TextField>(key, height, width, id, classes, alignItems, justifyContent, postProcess) {
 
     override fun createElement(): Element<Text> {
         return TextRenderElement(this)

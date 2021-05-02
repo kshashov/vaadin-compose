@@ -9,14 +9,8 @@ import io.github.kshashov.vaadincompose.widget.Widget
 class HasDialog(
     val child: Widget,
     val dialog: Dialog,
-    key: String? = null,
-    height: String? = null,
-    width: String? = null,
-    id: String = "",
-    classes: Collection<String> = listOf(),
-    alignItems: String? = null,
-    justifyContent: String? = null
-) : RenderWidget(key, height, width, id, classes, alignItems, justifyContent) {
+    key: String? = null
+) : RenderWidget<Div>(key) {
 
     override fun createElement(): Element<HasDialog> {
         return HasDialogRenderElement(this)
