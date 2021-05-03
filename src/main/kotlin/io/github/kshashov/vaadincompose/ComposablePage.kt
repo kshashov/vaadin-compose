@@ -31,6 +31,10 @@ interface ComposablePage {
             TextField(it.element.javaClass.toString())
         }
 
+        add(grid)
+
+        grid.setItems(listOf(context))
+        grid.setItems(listOf())
         grid.setItems(listOf(context))
 
 
@@ -44,6 +48,7 @@ interface ComposablePage {
 
         element.mount(context)
         add(element.renderedComponent)
+        add(Button("r") { grid.setItems(listOf(context)) })
 
         return context
     }

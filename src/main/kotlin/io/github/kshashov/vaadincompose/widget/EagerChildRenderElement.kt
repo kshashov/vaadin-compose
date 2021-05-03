@@ -3,9 +3,8 @@ package io.github.kshashov.vaadincompose.widget
 import com.vaadin.flow.component.Component
 import com.vaadin.flow.component.HasComponents
 
-abstract class HasChildRenderElement<WIDGET : RenderWidget<COMPONENT>, COMPONENT : Component>(widget: WIDGET) :
-    RenderElement<WIDGET, COMPONENT>(widget) {
-    protected val elementsCache: MutableMap<String, Element<*>> = HashMap()
+abstract class EagerChildRenderElement<WIDGET : RenderWidget<COMPONENT>, COMPONENT : Component>(widget: WIDGET) :
+    ChildSupportRenderElement<WIDGET, COMPONENT>(widget) {
 
     protected abstract fun getChilds(): Collection<Widget>
 
@@ -34,43 +33,11 @@ abstract class HasChildRenderElement<WIDGET : RenderWidget<COMPONENT>, COMPONENT
             val childKey = key(childWidget, i)
             actualCacheKeys.add(childKey)
 
-            // Try to reuse element from cache
-            if (elementsCache.containsKey(childKey)) {
-                val cachedElement = elementsCache[childKey]!!
-
-                // We shouldn't mount existing element here
-                // Just propagate context updating to child
-                cachedElement.attachWidget(childWidget)
-                context.childs.add(cachedElement.context)
-            } else {
-                // Create and mount new element
-                // Mount updates the current context childs so we shouldn't do it manually
-                val childElement = childWidget.createElement()
-                childElement.mount(context)
-                elementsCache[childKey] = childElement
-            }
+            updateContextChild(childKey, childWidget)
         }
 
         // Remove cache keys that are not in a prepopulated set
-        elementsCache.entries.removeIf {
-            val check = !actualCacheKeys.contains(it.key)
-            if (check) {
-                it.value.detach()
-                // Give element a chance to be reused later
-                if (shouldKeepDetachedElement(it)) {
-                    return@removeIf false
-                }
-                it.value.dispose()
-            }
-            return@removeIf check
-        }
-    }
-
-    /**
-     * Returns true if the element should be stored in the cache to be reused later.
-     */
-    protected open fun shouldKeepDetachedElement(mutableEntry: Map.Entry<String, Element<*>>): Boolean {
-        return false
+        removeObsoleteCache(actualCacheKeys)
     }
 
     override fun refreshComponent() {

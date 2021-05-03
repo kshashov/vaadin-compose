@@ -1,8 +1,8 @@
 package io.github.kshashov.vaadincompose.widget.components
 
 import com.vaadin.flow.component.orderedlayout.FlexLayout
+import io.github.kshashov.vaadincompose.widget.EagerChildRenderElement
 import io.github.kshashov.vaadincompose.widget.Element
-import io.github.kshashov.vaadincompose.widget.HasChildRenderElement
 import io.github.kshashov.vaadincompose.widget.RenderWidget
 import io.github.kshashov.vaadincompose.widget.Widget
 
@@ -23,7 +23,7 @@ class Container(
         return ContainerRenderElement(this)
     }
 
-    class ContainerRenderElement(widget: Container) : HasChildRenderElement<Container, FlexLayout>(widget) {
+    class ContainerRenderElement(widget: Container) : EagerChildRenderElement<Container, FlexLayout>(widget) {
 
         override fun createComponent(): FlexLayout {
             return FlexLayout()

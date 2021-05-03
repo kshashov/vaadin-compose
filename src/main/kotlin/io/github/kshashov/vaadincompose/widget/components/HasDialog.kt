@@ -9,11 +9,11 @@ class HasDialog(
 ) : RenderWidget<RenderElement.EmptyWidget>(key) {
 
     override fun createElement(): Element<HasDialog> {
-        return HasDialogRenderElement(this)
+        return EagerDialogRenderElement(this)
     }
 
-    class HasDialogRenderElement(widget: HasDialog) :
-        HasChildRenderElement<HasDialog, RenderElement.EmptyWidget>(widget) {
+    class EagerDialogRenderElement(widget: HasDialog) :
+        EagerChildRenderElement<HasDialog, RenderElement.EmptyWidget>(widget) {
 
         override fun updateContextChilds(list: Collection<Widget>) {
             super.updateContextChilds(list)

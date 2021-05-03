@@ -1,7 +1,7 @@
 package io.github.kshashov.vaadincompose.widget.components
 
+import io.github.kshashov.vaadincompose.widget.EagerChildRenderElement
 import io.github.kshashov.vaadincompose.widget.Element
-import io.github.kshashov.vaadincompose.widget.HasChildRenderElement
 import io.github.kshashov.vaadincompose.widget.RenderWidget
 import io.github.kshashov.vaadincompose.widget.Widget
 import com.vaadin.flow.component.dialog.Dialog as VaadinDialog
@@ -23,7 +23,7 @@ class Dialog(
         return DialogRenderElement(this)
     }
 
-    class DialogRenderElement(widget: Dialog) : HasChildRenderElement<Dialog, VaadinDialog>(widget) {
+    class DialogRenderElement(widget: Dialog) : EagerChildRenderElement<Dialog, VaadinDialog>(widget) {
 
         override fun createComponent(): VaadinDialog {
             return VaadinDialog()

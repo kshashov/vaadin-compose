@@ -2,7 +2,7 @@ package io.github.kshashov.vaadincompose.widget.components
 
 import com.vaadin.flow.component.grid.Grid
 import com.vaadin.flow.shared.Registration
-import io.github.kshashov.vaadincompose.widget.HasChildRenderElement
+import io.github.kshashov.vaadincompose.widget.EagerChildRenderElement
 import io.github.kshashov.vaadincompose.widget.RenderElement
 import io.github.kshashov.vaadincompose.widget.RenderWidget
 import io.github.kshashov.vaadincompose.widget.Widget
@@ -26,7 +26,7 @@ class Table<T>(
         return GridRenderElement(this)
     }
 
-    class GridRenderElement<T>(widget: Table<T>) : HasChildRenderElement<Table<T>, Grid<T>>(widget) {
+    class GridRenderElement<T>(widget: Table<T>) : EagerChildRenderElement<Table<T>, Grid<T>>(widget) {
         private var reg: Registration? = null
         private var rows: MutableMap<T, TableRow<T>> = HashMap()
 
@@ -51,6 +51,7 @@ class Table<T>(
 
         override fun refreshComponent() {
             component.removeAllColumns()
+
             var builderIndex = 0
             widget.columns.forEach { info ->
                 val column: Grid.Column<*>
@@ -95,10 +96,11 @@ class TableRow<T>(
     val item: T,
     val columns: List<TableColumn<T>>
 ) : RenderWidget<RenderElement.EmptyWidget>() {
-    override fun createElement() = TableRowElement<T>(this)
+    override fun createElement() = TableRowElement(this)
 }
 
-class TableRowElement<T>(widget: TableRow<T>) : HasChildRenderElement<TableRow<T>, RenderElement.EmptyWidget>(widget) {
+class TableRowElement<T>(widget: TableRow<T>) :
+    EagerChildRenderElement<TableRow<T>, RenderElement.EmptyWidget>(widget) {
 
     override fun getChilds(): Collection<Widget> {
         return widget.columns.stream()

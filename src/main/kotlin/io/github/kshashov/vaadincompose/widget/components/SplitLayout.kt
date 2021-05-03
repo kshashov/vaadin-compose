@@ -1,7 +1,7 @@
 package io.github.kshashov.vaadincompose.widget.components
 
 import com.vaadin.flow.component.Component
-import io.github.kshashov.vaadincompose.widget.HasChildRenderElement
+import io.github.kshashov.vaadincompose.widget.EagerChildRenderElement
 import io.github.kshashov.vaadincompose.widget.RenderWidget
 import io.github.kshashov.vaadincompose.widget.Widget
 import com.vaadin.flow.component.splitlayout.SplitLayout as VaadinSplitLayout
@@ -25,7 +25,7 @@ class SplitLayout(
     }
 
     class SplitLayoutRenderElement(widget: SplitLayout) :
-        HasChildRenderElement<SplitLayout, VaadinSplitLayout>(widget) {
+        EagerChildRenderElement<SplitLayout, VaadinSplitLayout>(widget) {
 
         override fun createComponent(): VaadinSplitLayout {
             return VaadinSplitLayout()
