@@ -6,7 +6,8 @@ import io.github.kshashov.vaadincompose.widget.Widget
 class BuildContext(
     val element: Element<*>,
     val childs: MutableList<BuildContext> = mutableListOf(),
-    val parent: BuildContext? = null
+    val parent: BuildContext? = null,
+    val listeners: MutableList<TreeListener> = mutableListOf()
 ) {
     @Suppress("UNCHECKED_CAST")
     fun <T : Element<*>> findNearestElementAncestor(type: Class<T>): T? {
@@ -34,6 +35,14 @@ class BuildContext(
         }
     }
 
+    fun notify(code: String) {
+        listeners.forEach { it.invoke(this, code) }
+    }
+
+    fun addListener(listener: TreeListener) {
+        listeners.add(listener)
+    }
+
     fun dispose() {
         for (context in childs) {
             context.dispose()
@@ -54,5 +63,19 @@ class BuildContext(
 
     companion object {
         fun root(): BuildContext = BuildContext(element = FakeElement())
+        fun child(
+            element: Element<*>,
+            childs: MutableList<BuildContext> = mutableListOf(),
+            parent: BuildContext
+        ): BuildContext {
+            return BuildContext(
+                element = element,
+                childs = childs,
+                parent = parent,
+                listeners = parent.listeners
+            )
+        }
     }
 }
+
+typealias TreeListener = (context: BuildContext, code: String) -> Unit

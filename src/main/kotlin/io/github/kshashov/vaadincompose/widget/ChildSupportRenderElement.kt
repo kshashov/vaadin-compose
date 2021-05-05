@@ -24,22 +24,26 @@ abstract class ChildSupportRenderElement<WIDGET : RenderWidget<COMPONENT>, COMPO
         }
     }
 
-    protected open fun updateContextChild(childKey: String, childWidget: Widget) {
+    protected open fun updateContextChild(childKey: String, childWidget: Widget): Element<*> {
+        val element: Element<*>
+
         // Try to reuse element from cache
         if (elementsCache.containsKey(childKey)) {
-            val cachedElement = elementsCache[childKey]!!
+            element = elementsCache[childKey]!!
 
             // We shouldn't mount existing element here
             // Just propagate context updating to child
-            cachedElement.attachWidget(childWidget)
-            context.childs.add(cachedElement.context)
+            element.attachWidget(childWidget)
+            context.childs.add(element.context)
         } else {
             // Create and mount new element
             // Mount updates the current context childs so we shouldn't do it manually
-            val childElement = childWidget.createElement()
-            childElement.mount(context)
-            elementsCache[childKey] = childElement
+            element = childWidget.createElement()
+            element.mount(context)
+            elementsCache[childKey] = element
         }
+
+        return element
     }
 
     /**

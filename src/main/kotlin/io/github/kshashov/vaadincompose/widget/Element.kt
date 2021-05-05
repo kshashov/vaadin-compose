@@ -50,7 +50,7 @@ abstract class Element<WIDGET : Widget>(var widget: WIDGET) {
         if (!state.equals(State.CREATED)) {
             throw IllegalStateException("Element State should be CREATED before first attach")
         }
-        context = BuildContext(this, parent = parent)
+        context = BuildContext.child(this, parent = parent)
         parent.childs.add(context)
         state = State.ATTACHED
     }

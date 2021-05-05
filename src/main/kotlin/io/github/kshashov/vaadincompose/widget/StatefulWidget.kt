@@ -49,9 +49,12 @@ abstract class StatefulWidget(key: String? = null) : Widget(key) {
             context.visitNearestElementInheritors(RenderElement::class.java) {
                 if (it.dirty) {
                     it.refreshComponent()
+                    it.postProcess()
                     it.dirty = false
                 }
             }
+
+            context.notify("rebuild")
         }
 
         override fun detach() {

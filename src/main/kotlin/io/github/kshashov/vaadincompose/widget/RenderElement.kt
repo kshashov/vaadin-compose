@@ -14,6 +14,7 @@ abstract class RenderElement<WIDGET : RenderWidget<COMPONENT>, COMPONENT : Compo
         component = createComponent()
 
         refreshComponent()
+        postProcess()
 
         return component
     }
@@ -31,11 +32,13 @@ abstract class RenderElement<WIDGET : RenderWidget<COMPONENT>, COMPONENT : Compo
         dom.style.set(ElementConstants.STYLE_WIDTH, widget.width)
         dom.style.set("align-items", widget.alignItems)
         dom.style.set("justify-content", widget.justifyContent)
+    }
 
+    open fun postProcess() {
         widget.postProcess?.invoke(component)
     }
 
-    @Tag("v-empty")
+    @Tag("v-compose-empty")
     class EmptyWidget : Component()
 
     companion object {

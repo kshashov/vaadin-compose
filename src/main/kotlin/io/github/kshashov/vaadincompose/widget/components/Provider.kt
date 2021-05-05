@@ -1,6 +1,8 @@
-package io.github.kshashov.vaadincompose.widget
+package io.github.kshashov.vaadincompose.widget.components
 
 import io.github.kshashov.vaadincompose.BuildContext
+import io.github.kshashov.vaadincompose.widget.StatelessWidget
+import io.github.kshashov.vaadincompose.widget.Widget
 
 class Provider<T : Any>(val child: Widget, val service: T, key: String? = null) : StatelessWidget(key) {
     override fun build(context: BuildContext): Widget {

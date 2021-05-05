@@ -56,7 +56,7 @@ class Conditional(
          * Overrides key to have an ability to store both elements even for the same widget class.
          */
         override fun key(widget: Widget, index: Int): String {
-            val prefix: String = this.widget.condition.toString()
+            val prefix: String = "v-compose-conditional-" + this.widget.condition.toString()
             return prefix + super.key(widget, index)
         }
     }
