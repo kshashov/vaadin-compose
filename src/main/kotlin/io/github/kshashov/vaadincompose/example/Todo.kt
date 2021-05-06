@@ -17,6 +17,10 @@ import io.reactivex.rxjava3.subjects.BehaviorSubject
 @Route("")
 class Todo : Div(), ComposablePage {
 
+    init {
+        setSizeFull()
+    }
+
     override fun build(context: BuildContext): Widget {
         return Provider(child = MainWidget(), service = TodoBloc(ArrayList()))
     }
@@ -57,7 +61,7 @@ class Todo : Div(), ComposablePage {
                         builder = { items ->
                             ListView(
                                 height = "100%",
-                                direction = FlexLayout.FlexDirection.COLUMN_REVERSE,
+                                direction = FlexLayout.FlexDirection.COLUMN,
                                 items = items.requireData(),
                                 render = { TodoItemWidget(item = it, key = it.id.toString()) }
                             )
@@ -108,22 +112,22 @@ class Todo : Div(), ComposablePage {
         val texts: BehaviorSubject<String> = BehaviorSubject.createDefault("")
 
         fun add(text: String) {
-            items.add(TodoItem(id = counter++, text))
+            items.add(0, TodoItem(id = counter++, text))
             this.texts.onNext("")
             todos.onNext(items)
         }
 
         fun up(it: TodoItem) {
             val ind = items.indexOf(it)
-            if (ind == (items.size - 1)) return
-            items.add(ind + 1, items.removeAt(ind))
+            if (ind == 0) return
+            items.add(ind - 1, items.removeAt(ind))
             todos.onNext(items)
         }
 
         fun down(it: TodoItem) {
             val ind = items.indexOf(it)
-            if (ind == 0) return
-            items.add(ind - 1, items.removeAt(ind))
+            if (ind == (items.size - 1)) return
+            items.add(ind + 1, items.removeAt(ind))
             todos.onNext(items)
         }
 

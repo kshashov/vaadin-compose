@@ -22,10 +22,10 @@ class ListView<T>(
 ) : RenderWidget<FlexLayout>(key, height, width, id, classes, alignItems, justifyContent, postProcess) {
 
     override fun createElement(): Element<ListView<T>> {
-        return ContainerRenderElement(this)
+        return ListViewRenderElement(this)
     }
 
-    class ContainerRenderElement<T>(widget: ListView<T>) : EagerChildRenderElement<ListView<T>, FlexLayout>(widget) {
+    class ListViewRenderElement<T>(widget: ListView<T>) : EagerChildRenderElement<ListView<T>, FlexLayout>(widget) {
 
         override fun createComponent(): FlexLayout {
             return FlexLayout()

@@ -1,5 +1,6 @@
 package io.github.kshashov.vaadincompose.debug
 
+import com.vaadin.flow.component.orderedlayout.FlexLayout
 import io.github.kshashov.vaadincompose.BuildContext
 import io.github.kshashov.vaadincompose.Snapshot
 import io.github.kshashov.vaadincompose.widget.StatelessWidget
@@ -16,22 +17,33 @@ class DebugWidgetsTree(key: String? = null) : StatelessWidget(key) {
             builder = { ctx ->
                 if (!ctx.hasData) Label("Loading")
                 else TreeTable(
+                    height = "100%",
                     items = listOf(ctx.requireData()),
                     childsProvider = { it.childs },
                     columns = listOf(
                         TreeTableColumn(
                             builder = { item ->
-                                Label(
-                                    item.element.javaClass.simpleName,
-                                    postProcess = { it.style.set("font-weight", "bold") })
-                            }, header = "Element"
-                        ),
-                        TableColumn(
-                            renderer = { item -> item.element.widget.javaClass.simpleName },
-                            header = "Widget"
-                        ),
-                        TableColumn(renderer = { it.element.state.toString() }, header = "State")
-                    )
+                                Container(
+                                    direction = FlexLayout.FlexDirection.ROW,
+                                    childs = listOf(
+                                        Label(item.element.widget.javaClass.simpleName, postProcess = {
+                                            it.style
+                                                .set("font-weight", "bold")
+                                                .set("margin", "0 10px")
+                                        }),
+                                        Label(item.element.javaClass.simpleName)
+                                    ),
+                                )
+                            }, header = "Element",
+                            postProcess = {
+                                it.setFlexGrow(2)
+                            }
+                        )
+                    ),
+                    postProcess = {
+                        it.expandRecursively(listOf(ctx.requireData()), 10000)
+                        it.setMinHeight("500px")
+                    }
                 )
             })
     }

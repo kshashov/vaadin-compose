@@ -21,7 +21,7 @@ class TreeTable<T>(
     classes: Collection<String> = listOf(),
     alignItems: String? = null,
     justifyContent: String? = null,
-    postProcess: ((Grid<T>) -> Unit)? = null
+    postProcess: ((TreeGrid<T>) -> Unit)? = null
 ) : BaseTable<T, TreeGrid<T>>(
     items,
     columns,
@@ -45,7 +45,7 @@ class TreeTable<T>(
             return TreeGrid()
         }
 
-        override fun addColumn(info: TableColumn<T>, provider: (row: T) -> String): Grid.Column<*> {
+        override fun addColumn(info: TableColumn<T>, provider: (row: T) -> String): Grid.Column<T> {
             if (info is TreeTableColumn<T>) {
                 return component.addHierarchyColumn(provider)
             }
@@ -53,7 +53,7 @@ class TreeTable<T>(
             return super.addColumn(info, provider)
         }
 
-        override fun addComponentColumn(info: TableColumn<T>, provider: (row: T) -> Component): Grid.Column<*> {
+        override fun addComponentColumn(info: TableColumn<T>, provider: (row: T) -> Component): Grid.Column<T> {
             if (info is TreeTableColumn<T>) {
                 return component.addComponentHierarchyColumn(provider)
             }
@@ -83,6 +83,8 @@ class TreeTableColumn<T>(
     header: String? = null,
     renderer: ((T) -> String)? = null,
     builder: ((T) -> Widget)? = null,
-) : TableColumn<T>(header, renderer, builder) {
+    sortable: Boolean = true,
+    postProcess: ((Grid.Column<T>) -> Unit)? = null,
+) : TableColumn<T>(header, sortable, renderer, builder, postProcess) {
 
 }

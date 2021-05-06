@@ -82,16 +82,15 @@ abstract class BaseGridRenderElement<T, COMPONENT : Grid<T>, WIDGET : BaseTable<
             .toList()
 
         var builderIndex = 0
-        widget.columns.forEach { info ->
-            val column: Grid.Column<*>
+        widget.columns.forEachIndexed { index, info ->
+            val column: Grid.Column<T>
             if (info.renderer != null) {
                 column = addColumn(info) { info.renderer.invoke(it) }
             } else if (info.builder != null) {
-                val index = builderIndex++
+//                val index = builderIndex++
                 column = addComponentColumn(info) {
                     val key = actualKeys[it]!!
-                    val rowElement = updateContextChild(key, TableRow(it, buiderColumns))
-                    val cellElement = rowElement.context.childs[index].element
+                    val cellElement = updateContextChild(key, info.builder.invoke(it))
                     cellElement.renderedComponent.element.removeFromParent()
                     return@addComponentColumn cellElement.renderedComponent
                 }
@@ -102,6 +101,10 @@ abstract class BaseGridRenderElement<T, COMPONENT : Grid<T>, WIDGET : BaseTable<
             if (info.header != null) {
                 column.setHeader(info.header)
             }
+
+            column.isSortable = info.sortable
+
+            info.postProcess?.invoke(column)
         }
 
         reg?.remove()
@@ -116,11 +119,11 @@ abstract class BaseGridRenderElement<T, COMPONENT : Grid<T>, WIDGET : BaseTable<
         setGridItems(widget.items)
     }
 
-    protected open fun addColumn(info: TableColumn<T>, provider: (row: T) -> String): Grid.Column<*> {
+    protected open fun addColumn(info: TableColumn<T>, provider: (row: T) -> String): Grid.Column<T> {
         return component.addColumn(provider)
     }
 
-    protected open fun addComponentColumn(info: TableColumn<T>, provider: (row: T) -> Component): Grid.Column<*> {
+    protected open fun addComponentColumn(info: TableColumn<T>, provider: (row: T) -> Component): Grid.Column<T> {
         return component.addComponentColumn(provider)
     }
 
@@ -139,8 +142,10 @@ abstract class BaseGridRenderElement<T, COMPONENT : Grid<T>, WIDGET : BaseTable<
 
 open class TableColumn<T>(
     val header: String? = null,
+    val sortable: Boolean = true,
     val renderer: ((T) -> String)? = null,
-    val builder: ((T) -> Widget)? = null
+    val builder: ((T) -> Widget)? = null,
+    val postProcess: ((Grid.Column<T>) -> Unit)? = null
 )
 
 class TableRow<T>(

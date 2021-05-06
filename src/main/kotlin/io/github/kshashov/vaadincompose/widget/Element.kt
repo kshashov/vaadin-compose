@@ -32,14 +32,15 @@ abstract class Element<WIDGET : Widget>(var widget: WIDGET) {
      * Refreshes element state according to a new [widget] info.
      */
     fun attachWidget(widget: Widget) {
-        if (!state.equals(State.DETACHED) && !state.equals(State.MOUNTED)) {
+        if (!state.equals(State.DETACHED) && !state.equals(State.MOUNTED) && !state.equals(State.REMOUNTED)) {
             throw IllegalStateException("Element State should be DETACHED or MOUNTED before re-attach")
         }
         state = State.ATTACHED
         onBeforeWidgetRefresh()
         doAttachWidget(widget)
         onAfterWidgetRefresh()
-        state = State.MOUNTED
+
+        state = State.REMOUNTED
     }
 
     protected open fun key(widget: Widget, index: Int): String {
@@ -56,7 +57,7 @@ abstract class Element<WIDGET : Widget>(var widget: WIDGET) {
     }
 
     @Suppress("UNCHECKED_CAST")
-    private fun doAttachWidget(widget: Widget) {
+    protected open fun doAttachWidget(widget: Widget) {
         this.widget = widget as WIDGET;
     }
 
@@ -64,7 +65,7 @@ abstract class Element<WIDGET : Widget>(var widget: WIDGET) {
      * Invoked when the element is detached from tree but still stored in cache.
      */
     open fun detach() {
-        if (!state.equals(State.MOUNTED)) {
+        if (!state.equals(State.MOUNTED) && !state.equals(State.REMOUNTED)) {
             throw IllegalStateException("Element State should be MOUNTED before detach")
         }
         state = State.DETACHED
@@ -100,6 +101,7 @@ abstract class Element<WIDGET : Widget>(var widget: WIDGET) {
         CREATED,
         ATTACHED,
         MOUNTED,
+        REMOUNTED,
         DETACHED,
         DISPOSED
     }

@@ -16,7 +16,8 @@ class DebugWindow(private val child: Widget, private val bloc: DebugToolsBloc, k
             child = SplitLayout(
                 key = KEY,
                 primary = child,
-                secondary = DebugWidgetsTree()
+                secondary = DebugWidgetsTree(),
+                height = "100%"
             )
         )
     }

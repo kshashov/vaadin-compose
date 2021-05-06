@@ -21,7 +21,14 @@ abstract class RenderElement<WIDGET : RenderWidget<COMPONENT>, COMPONENT : Compo
 
     protected abstract fun createComponent(): COMPONENT
 
-    open fun refreshComponent() {
+    override fun onAfterWidgetRefresh() {
+        super.onAfterWidgetRefresh()
+
+        refreshComponent()
+        postProcess()
+    }
+
+    protected open fun refreshComponent() {
         component.setId(widget.id)
 
         val dom = component.element

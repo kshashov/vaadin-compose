@@ -13,8 +13,8 @@ abstract class EagerChildRenderElement<WIDGET : RenderWidget<COMPONENT>, COMPONE
         updateContextChilds(getChilds())
     }
 
-    override fun onAfterWidgetRefresh() {
-        super.onAfterWidgetRefresh()
+    override fun doAttachWidget(widget: Widget) {
+        super.doAttachWidget(widget)
         updateContextChilds(getChilds())
     }
 

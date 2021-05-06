@@ -47,27 +47,11 @@ abstract class StatefulWidget(key: String? = null) : Widget(key) {
          * Refreshes element subtree.
          */
         fun rebuild() {
-            var oldComponent = renderedComponent
-
-            // Mark all subtree render nodes as dirty
-            context.visitChildElementsByType(RenderElement::class.java) {
-                it.dirty = true
-            }
+            val oldComponent = renderedComponent
 
             // Rebuild context subtree
             // Bring back cached nodes or mount new nodes
             updateContextChilds(getChild())
-
-            // The new render nodes are alrady ready to go but we still need to refresh the old dirty ones
-            context.visitChildElementsByType(RenderElement::class.java) {
-                if (it.dirty) {
-                    it.refreshComponent()
-                    it.postProcess()
-                    it.dirty = false
-                }
-            }
-
-            context.notify("rebuild")
 
             if (renderedComponent != oldComponent) {
                 // Replace root rendered component with a new instance
@@ -78,6 +62,8 @@ abstract class StatefulWidget(key: String? = null) : Widget(key) {
                     it.element.insertChild(index, renderedComponent.element)
                 }
             }
+
+            context.notify("rebuild")
         }
 
         override fun detach() {
