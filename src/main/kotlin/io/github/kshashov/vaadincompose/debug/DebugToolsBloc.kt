@@ -1,11 +1,11 @@
 package io.github.kshashov.vaadincompose.debug
 
 import io.github.kshashov.vaadincompose.BuildContext
-import io.reactivex.rxjava3.subjects.BehaviorSubject
+import io.reactivex.rxjava3.subjects.PublishSubject
 
 class DebugToolsBloc {
     private var root: BuildContext? = null
-    val debugTree: BehaviorSubject<BuildContext> = BehaviorSubject.create()
+    val debugTree: PublishSubject<BuildContext> = PublishSubject.create()
 
     fun init(context: BuildContext) {
         if (root == null) {
@@ -22,14 +22,6 @@ class DebugToolsBloc {
     }
 
     private fun isDebugContext(context: BuildContext): Boolean {
-        if (context.element.widget is DebugWindow) {
-            return true
-        }
-
-        if (context.parent == null) {
-            return false
-        }
-
-        return isDebugContext(context.parent)
+        return context.findParentWidgetByType(DebugWidgetsTree::class.java) != null
     }
 }

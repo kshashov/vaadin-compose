@@ -29,7 +29,11 @@ interface ComposablePage {
         add(element.renderedComponent)
 
         if (isDebug()) {
-            bloc.init(context.childs[0].childs[0].childs[0].childs[0])
+            bloc.init(
+                context.findChildElement {
+                    it.widget.key == DebugWindow.KEY
+                }?.context?.childs!![0]
+            )
             bloc.refresh(context, "init")
         }
 

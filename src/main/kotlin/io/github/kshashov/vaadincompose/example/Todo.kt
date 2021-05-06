@@ -6,7 +6,10 @@ import com.vaadin.flow.component.orderedlayout.FlexLayout
 import com.vaadin.flow.router.Route
 import io.github.kshashov.vaadincompose.BuildContext
 import io.github.kshashov.vaadincompose.ComposablePage
-import io.github.kshashov.vaadincompose.widget.*
+import io.github.kshashov.vaadincompose.Snapshot
+import io.github.kshashov.vaadincompose.widget.StatefulWidget
+import io.github.kshashov.vaadincompose.widget.StatelessWidget
+import io.github.kshashov.vaadincompose.widget.Widget
 import io.github.kshashov.vaadincompose.widget.components.*
 import io.reactivex.rxjava3.subjects.BehaviorSubject
 
@@ -34,12 +37,13 @@ class Todo : Div(), ComposablePage {
                         direction = FlexLayout.FlexDirection.ROW,
                         childs = listOf(
                             StreamConsumer(
+                                initial = Snapshot.withData(""),
                                 stream = bloc.texts,
                                 builder = { text ->
-                                    this.text = text
+                                    this.text = text.requireData()
                                     return@StreamConsumer Text(
                                         label = "New Item",
-                                        text = text,
+                                        text = text.requireData(),
                                         onChanged = { this.text = it })
                                 }),
                             Button("Add", {
@@ -48,12 +52,13 @@ class Todo : Div(), ComposablePage {
                         )
                     ),
                     StreamConsumer(
+                        initial = Snapshot.withData(mutableListOf()),
                         stream = bloc.todos,
                         builder = { items ->
                             ListView(
                                 height = "100%",
                                 direction = FlexLayout.FlexDirection.COLUMN_REVERSE,
-                                items = items,
+                                items = items.requireData(),
                                 render = { TodoItemWidget(item = it, key = it.id.toString()) }
                             )
                         })

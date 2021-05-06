@@ -14,9 +14,14 @@ class DebugWindow(private val child: Widget, private val bloc: DebugToolsBloc, k
         return Provider(
             service = bloc,
             child = SplitLayout(
+                key = KEY,
                 primary = child,
                 secondary = DebugWidgetsTree()
             )
         )
+    }
+
+    companion object {
+        const val KEY = "v-compose-debug-parent"
     }
 }

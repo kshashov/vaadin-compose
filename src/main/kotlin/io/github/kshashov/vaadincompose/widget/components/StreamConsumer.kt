@@ -1,45 +1,44 @@
 package io.github.kshashov.vaadincompose.widget.components
 
 import io.github.kshashov.vaadincompose.BuildContext
+import io.github.kshashov.vaadincompose.Snapshot
 import io.github.kshashov.vaadincompose.widget.StatefulWidget
 import io.github.kshashov.vaadincompose.widget.Widget
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.disposables.Disposable
 
-class StreamConsumer<T>(
-    val stream: Observable<T>,
-    val builder: (T) -> Widget,
-    val initial: Widget? = null,
+class StreamConsumer<T : Any>(
+    val stream: Observable<T?>,
+    val builder: (Snapshot<T>) -> Widget,
+    val initial: Snapshot<T> = Snapshot.empty(),
     key: String? = null
-) :
-    StatefulWidget(key) {
+) : StatefulWidget(key) {
     override fun createState() = StreamConsumerState<T>()
 
-    class StreamConsumerState<T> : WidgetState<StreamConsumer<T>>() {
+    class StreamConsumerState<T : Any> : WidgetState<StreamConsumer<T>>() {
         private var subscription: Disposable? = null
-        private var payload: T? = null
+        private var payload: Snapshot<T>? = null
         private var first = true
 
         override fun build(context: BuildContext): Widget {
-
-            return Container(
-                childs = listOf(
-                    if (first && (widget.initial != null)) {
-                        widget.initial!!
-                    } else {
-                        widget.builder.invoke(payload!!)
-                    }
-                )
-            )
+            val data = if (first) widget.initial else payload!!
+            return widget.builder.invoke(data)
         }
 
-        override fun initState() {
-            super.initState()
-            subscribe();
+        override fun updateWidget(widget: StatefulWidget) {
+            super.updateWidget(widget)
+            if (payload == null) {
+                payload = this.widget.initial
+            }
         }
 
-        override fun didUpdateWidget(oldWidget: StatefulWidget) {
-            super.didUpdateWidget(oldWidget)
+        override fun firstAttach() {
+            super.firstAttach()
+            subscribe()
+        }
+
+        override fun attach(oldWidget: StatefulWidget) {
+            super.attach(oldWidget)
             if ((oldWidget as StreamConsumer<*>).stream != widget.stream) {
                 unsubscribe();
                 subscribe();
@@ -52,10 +51,15 @@ class StreamConsumer<T>(
         }
 
         private fun subscribe() {
-            subscription = widget.stream.subscribe {
+            subscription = widget.stream.subscribe({
                 first = false
-                setState { payload = it }
-            }
+                setState { payload = Snapshot.withData(it, Snapshot.State.ACTIVE) }
+            }, {
+                first = false
+                setState { payload = Snapshot.withError(it, Snapshot.State.ACTIVE) }
+            }, {
+                setState { payload = payload!!.done() }
+            })
         }
 
         private fun unsubscribe() {

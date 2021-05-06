@@ -13,7 +13,7 @@ class Provider<T : Any>(val child: Widget, val service: T, key: String? = null) 
 
         @Suppress("UNCHECKED_CAST")
         fun <T : Any> of(type: Class<T>, context: BuildContext): T? {
-            val widget = context.findNearestElementAncestor {
+            val widget = context.findParentElement {
                 val saved = it.widget
                 (saved is Provider<*>) && (type.isAssignableFrom(saved.service.javaClass))
             }?.widget

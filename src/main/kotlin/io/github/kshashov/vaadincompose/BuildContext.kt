@@ -10,28 +10,82 @@ class BuildContext(
     val listeners: MutableList<TreeListener> = mutableListOf()
 ) {
     @Suppress("UNCHECKED_CAST")
-    fun <T : Element<*>> findNearestElementAncestor(type: Class<T>): T? {
-        return findNearestElementAncestor {
+    fun <T : Element<*>> findParentElementByType(type: Class<T>): T? {
+        return findParentElement {
             type.isAssignableFrom(it.javaClass)
         } as T?
     }
 
-    fun findNearestElementAncestor(filter: (element: Element<*>) -> Boolean): Element<*>? {
+    @Suppress("UNCHECKED_CAST")
+    fun findParentWidgetByKey(key: String): Widget? {
+        return findParentElement {
+            it.widget.key == key
+        }?.widget
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    fun <T : Widget> findParentWidgetByType(type: Class<T>): T? {
+        val widget = findParentElement {
+            type.isAssignableFrom(it.widget.javaClass)
+        }?.widget
+
+        return widget as T?
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    fun <T : Element<*>> findChildElementByType(type: Class<T>): T? {
+        return findChildElement {
+            type.isAssignableFrom(it.javaClass)
+        } as T?
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    fun findChildWidgetByKey(key: String): Widget? {
+        return findChildElement {
+            it.widget.key == key
+        }?.widget
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    fun <T : Widget> findChildWidgetByType(type: Class<T>): T? {
+        val widget = findChildElement {
+            type.isAssignableFrom(it.widget.javaClass)
+        }?.widget
+
+        return widget as T?
+    }
+
+    fun findChildElement(filter: (element: Element<*>) -> Boolean): Element<*>? {
         if (filter.invoke(element)) {
             return element
         }
 
-        return parent?.findNearestElementAncestor(filter)
+        for (element in childs) {
+            val result = element.findChildElement(filter)
+            if (result != null) {
+                return result
+            }
+        }
+
+        return null
+    }
+
+    fun findParentElement(filter: (element: Element<*>) -> Boolean): Element<*>? {
+        if (filter.invoke(element)) {
+            return element
+        }
+
+        return parent?.findParentElement(filter)
     }
 
     @Suppress("UNCHECKED_CAST")
-    fun <T> visitNearestElementInheritors(type: Class<T>, action: (T) -> Unit) {
+    fun <T> visitChildElementsByType(type: Class<T>, action: (T) -> Unit) {
         if (type.isAssignableFrom(element.javaClass)) {
             action.invoke(element as T)
         }
 
         for (child in childs) {
-            child.visitNearestElementInheritors(type, action)
+            child.visitChildElementsByType(type, action)
         }
     }
 
