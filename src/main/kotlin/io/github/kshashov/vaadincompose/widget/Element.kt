@@ -33,7 +33,7 @@ abstract class Element<WIDGET : Widget>(var widget: WIDGET) {
      */
     fun attachWidget(widget: Widget) {
         if (!state.equals(State.DETACHED) && !state.equals(State.MOUNTED) && !state.equals(State.REMOUNTED)) {
-            throw IllegalStateException("Element State should be DETACHED or MOUNTED before re-attach")
+            throw IllegalStateException("Element State should be DETACHED or MOUNTED before re-attach. Actual: $state")
         }
         state = State.ATTACHED
         onBeforeWidgetRefresh()
@@ -49,7 +49,7 @@ abstract class Element<WIDGET : Widget>(var widget: WIDGET) {
 
     private fun attachContext(parent: BuildContext) {
         if (!state.equals(State.CREATED)) {
-            throw IllegalStateException("Element State should be CREATED before first attach")
+            throw IllegalStateException("Element State should be CREATED before first attach. Actual: $state")
         }
         context = BuildContext.child(this, parent = parent)
         parent.childs.add(context)
@@ -66,7 +66,7 @@ abstract class Element<WIDGET : Widget>(var widget: WIDGET) {
      */
     open fun detach() {
         if (!state.equals(State.MOUNTED) && !state.equals(State.REMOUNTED)) {
-            throw IllegalStateException("Element State should be MOUNTED before detach")
+            throw IllegalStateException("Element State should be MOUNTED before detach. Actual: $state")
         }
         state = State.DETACHED
     }
@@ -76,7 +76,7 @@ abstract class Element<WIDGET : Widget>(var widget: WIDGET) {
      */
     open fun dispose() {
         if (!state.equals(State.DETACHED)) {
-            throw IllegalStateException("Element State should be DETACHED before detach")
+            throw IllegalStateException("Element State should be DETACHED before detach. Actual: $state")
         }
         state = State.DISPOSED
     }

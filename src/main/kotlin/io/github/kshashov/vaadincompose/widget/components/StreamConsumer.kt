@@ -56,6 +56,7 @@ class StreamConsumer<T : Any>(
                 setState { payload = Snapshot.withData(it, Snapshot.State.ACTIVE) }
             }, {
                 first = false
+                it.printStackTrace()
                 setState { payload = Snapshot.withError(it, Snapshot.State.ACTIVE) }
             }, {
                 setState { payload = payload!!.done() }

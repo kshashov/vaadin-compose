@@ -11,8 +11,8 @@ import io.github.kshashov.vaadincompose.widget.Widget
  */
 class Conditional(
     val condition: Boolean,
-    val first: Widget,
-    val second: Widget,
+    val primaryBuilder: (() -> Widget),
+    val secondaryBuilder: (() -> Widget),
     key: String? = null,
 ) : Widget(key) {
 
@@ -37,7 +37,7 @@ class Conditional(
             if (context.childs.isNotEmpty()) {
                 // Update internal element cache for previous condition
                 previousCondition = this.widget.condition
-                pairHolder.putElement(previousCondition, key(widget, 0))
+                pairHolder.putElement(previousCondition, key(context.childs[0].element.widget, 0))
             }
         }
 
@@ -50,7 +50,11 @@ class Conditional(
             return false
         }
 
-        override fun getChild() = if (this.widget.condition) this.widget.first else this.widget.second
+        override fun getChild() =
+            if (this.widget.condition)
+                this.widget.primaryBuilder.invoke()
+            else
+                this.widget.secondaryBuilder.invoke()
 
         /**
          * Overrides key to have an ability to store both elements even for the same widget class.

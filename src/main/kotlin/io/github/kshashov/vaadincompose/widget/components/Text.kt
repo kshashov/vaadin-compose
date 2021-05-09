@@ -9,7 +9,7 @@ import io.github.kshashov.vaadincompose.widget.RenderWidget
 class Text(
     val text: String = "",
     val label: String = "",
-    val onChanged: ((String) -> Unit)? = null,
+    val onChange: ((String) -> Unit)? = null,
     key: String? = null,
     height: String? = null,
     width: String? = null,
@@ -39,7 +39,7 @@ class Text(
             component.label = widget.label
             component.value = widget.text
 
-            val onChanged = widget.onChanged
+            val onChanged = widget.onChange
             if (onChanged != null) {
                 reg = component.addValueChangeListener {
                     onChanged.invoke(it.value)

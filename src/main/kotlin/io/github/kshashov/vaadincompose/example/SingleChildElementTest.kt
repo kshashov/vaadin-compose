@@ -23,6 +23,10 @@ class SingleChildElementTest : Div(), ComposablePage {
         override fun createState() = MainState()
     }
 
+    override fun isDebug(): Boolean {
+        return true
+    }
+
     class MainState : StatefulWidget.WidgetState<MainWidget>() {
         private var switcher1: Boolean = false
         private var switcher2: Boolean = false
@@ -38,8 +42,8 @@ class SingleChildElementTest : Div(), ComposablePage {
                         }),
                         Conditional(
                             switcher2,
-                            first = Wrapper2(Label("True")),
-                            second = Wrapper2(Text("False"))
+                            primaryBuilder = { Wrapper2(Label("True")) },
+                            secondaryBuilder = { Wrapper2(Text("False")) }
                         ),
                         Button("Switch stateful", {
                             setState { switcher2 = !switcher2 }

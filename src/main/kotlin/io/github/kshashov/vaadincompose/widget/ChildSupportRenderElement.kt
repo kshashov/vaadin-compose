@@ -3,7 +3,7 @@ package io.github.kshashov.vaadincompose.widget
 import com.vaadin.flow.component.Component
 
 abstract class ChildSupportRenderElement<WIDGET : RenderWidget<COMPONENT>, COMPONENT : Component>(widget: WIDGET) :
-    RenderElement<WIDGET, COMPONENT>(widget) {
+    RenderElement<WIDGET, COMPONENT>(widget), HasDebugInfo {
     protected val elementsCache: MutableMap<String, Element<*>> = HashMap()
 
     /**
@@ -13,7 +13,11 @@ abstract class ChildSupportRenderElement<WIDGET : RenderWidget<COMPONENT>, COMPO
         elementsCache.entries.removeIf {
             val check = !actualCacheKeys.contains(it.key)
             if (check) {
-                it.value.detach()
+                // Detach if is not detached yet
+                if (!it.value.state.equals(Element.State.DETACHED)) {
+                    it.value.detach()
+                }
+
                 // Give element a chance to be reused later
                 if (shouldKeepDetachedElement(it)) {
                     return@removeIf false
@@ -51,6 +55,10 @@ abstract class ChildSupportRenderElement<WIDGET : RenderWidget<COMPONENT>, COMPO
      */
     protected open fun shouldKeepDetachedElement(mutableEntry: Map.Entry<String, Element<*>>): Boolean {
         return false
+    }
+
+    override fun getDebugInfo(): Map<String, Any>? {
+        return elementsCache.entries.associate { "cache/" + it.key to it.value }
     }
 }
 

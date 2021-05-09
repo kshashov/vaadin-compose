@@ -48,7 +48,7 @@ class Todo : Div(), ComposablePage {
                                     return@StreamConsumer Text(
                                         label = "New Item",
                                         text = text.requireData(),
-                                        onChanged = { this.text = it })
+                                        onChange = { this.text = it })
                                 }),
                             Button("Add", {
                                 bloc.add(text)

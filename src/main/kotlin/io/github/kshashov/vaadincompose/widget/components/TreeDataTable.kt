@@ -9,7 +9,7 @@ import java.util.stream.Stream
 import kotlin.streams.toList
 
 
-class TreeTable<T>(
+class TreeDataTable<T>(
     items: Collection<T>,
     val childsProvider: ValueProvider<T, Collection<T>>,
     columns: Collection<TableColumn<T>>,
@@ -22,7 +22,7 @@ class TreeTable<T>(
     alignItems: String? = null,
     justifyContent: String? = null,
     postProcess: ((TreeGrid<T>) -> Unit)? = null
-) : BaseTable<T, TreeGrid<T>>(
+) : BaseDataTable<T, TreeGrid<T>>(
     items,
     columns,
     onSelection,
@@ -40,7 +40,8 @@ class TreeTable<T>(
         return TreeGridRenderElement(this)
     }
 
-    class TreeGridRenderElement<T>(widget: TreeTable<T>) : BaseGridRenderElement<T, TreeGrid<T>, TreeTable<T>>(widget) {
+    class TreeGridRenderElement<T>(widget: TreeDataTable<T>) :
+        BaseGridRenderElement<T, TreeGrid<T>, TreeDataTable<T>>(widget) {
         override fun createComponent(): TreeGrid<T> {
             return TreeGrid()
         }
@@ -81,10 +82,11 @@ class TreeTable<T>(
 
 class TreeTableColumn<T>(
     header: String? = null,
+    sortable: Boolean = true,
+    resizable: Boolean = false,
     renderer: ((T) -> String)? = null,
     builder: ((T) -> Widget)? = null,
-    sortable: Boolean = true,
     postProcess: ((Grid.Column<T>) -> Unit)? = null,
-) : TableColumn<T>(header, sortable, renderer, builder, postProcess) {
+) : TableColumn<T>(header, sortable, resizable, renderer, builder, postProcess) {
 
 }

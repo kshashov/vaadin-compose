@@ -33,6 +33,7 @@ class SplitLayout(
 
         override fun refreshComponent() {
             super.refreshComponent()
+            component.orientation = widget.orientation
         }
 
         override fun getChilds() = listOf(widget.primary, widget.secondary)

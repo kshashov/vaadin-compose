@@ -7,7 +7,7 @@ import io.github.kshashov.vaadincompose.BuildContext
  * Supposed to be used as a parent class for non-render widgets.
  * Propagates render shit to the nested widget.
  */
-abstract class ProxyElement<WIDGET : Widget>(widget: WIDGET) : Element<WIDGET>(widget) {
+abstract class ProxyElement<WIDGET : Widget>(widget: WIDGET) : Element<WIDGET>(widget), HasDebugInfo {
     protected val elementsCache: MutableMap<String, Element<*>> = HashMap()
 
     override fun render(context: BuildContext): Component {
@@ -74,11 +74,16 @@ abstract class ProxyElement<WIDGET : Widget>(widget: WIDGET) : Element<WIDGET>(w
         elementsCache.entries.removeIf {
             val check = actualCacheKey != it.key
             if (check) {
-                it.value.detach()
+                // Detach if is not detached yet
+                if (!it.value.state.equals(Element.State.DETACHED)) {
+                    it.value.detach()
+                }
+
                 // Give element a chance to be reused later
                 if (shouldKeepDetachedElement(it)) {
                     return@removeIf false
                 }
+
                 it.value.dispose()
             }
             return@removeIf check
@@ -90,6 +95,10 @@ abstract class ProxyElement<WIDGET : Widget>(widget: WIDGET) : Element<WIDGET>(w
      */
     protected open fun shouldKeepDetachedElement(entry: Map.Entry<String, Element<*>>): Boolean {
         return false
+    }
+
+    override fun getDebugInfo(): Map<String, Any>? {
+        return elementsCache.entries.associate { "cache/" + it.key to it.value }
     }
 }
 

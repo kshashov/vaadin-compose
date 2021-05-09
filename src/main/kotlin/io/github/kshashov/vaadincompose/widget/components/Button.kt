@@ -1,5 +1,6 @@
 package io.github.kshashov.vaadincompose.widget.components
 
+import com.vaadin.flow.component.Component
 import com.vaadin.flow.shared.Registration
 import io.github.kshashov.vaadincompose.widget.Element
 import io.github.kshashov.vaadincompose.widget.RenderElement
@@ -7,8 +8,9 @@ import io.github.kshashov.vaadincompose.widget.RenderWidget
 import com.vaadin.flow.component.button.Button as VaadinButton
 
 class Button(
-    val text: String = "",
-    val action: (() -> Unit)? = null,
+    val text: String? = null,
+    val onClick: (() -> Unit)? = null,
+    val icon: Component? = null,
     key: String? = null,
     height: String? = null,
     width: String? = null,
@@ -43,9 +45,16 @@ class Button(
             super.refreshComponent();
 
             reg?.remove()
-            component.text = widget.text
 
-            val action = widget.action
+            if (widget.text != null) {
+                component.text = widget.text!!
+            }
+
+            if (widget.icon != null) {
+                component.icon = widget.icon!!
+            }
+
+            val action = widget.onClick
             if (action != null) {
                 reg = component.addClickListener { action.invoke() }
             }
