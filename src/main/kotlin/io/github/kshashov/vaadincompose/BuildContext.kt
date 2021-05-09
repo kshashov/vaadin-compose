@@ -97,13 +97,6 @@ class BuildContext(
         listeners.add(listener)
     }
 
-    fun dispose() {
-        for (context in childs) {
-            context.dispose()
-        }
-        element.dispose()
-    }
-
     /**
      * Fake Element that supposed to be used only in the root [BuildContext] node.
      */

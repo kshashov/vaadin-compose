@@ -4,7 +4,10 @@ import com.vaadin.flow.component.Component
 import com.vaadin.flow.component.HasComponents
 
 abstract class EagerChildRenderElement<WIDGET : RenderWidget<COMPONENT>, COMPONENT : Component>(widget: WIDGET) :
-    ChildSupportRenderElement<WIDGET, COMPONENT>(widget) {
+    RenderElement<WIDGET, COMPONENT>(widget), HasChildsElement {
+    private val cache: MutableMap<String, Element<*>> = HashMap()
+
+    override fun getElementsCache() = cache
 
     protected abstract fun getChilds(): Collection<Widget>
 
@@ -33,7 +36,7 @@ abstract class EagerChildRenderElement<WIDGET : RenderWidget<COMPONENT>, COMPONE
             val childKey = key(childWidget, i)
             actualCacheKeys.add(childKey)
 
-            updateContextChild(childKey, childWidget)
+            updateContextChild(context, childKey, childWidget)
         }
 
         // Remove cache keys that are not in a prepopulated set

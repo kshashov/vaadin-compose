@@ -1,15 +1,20 @@
 package io.github.kshashov.vaadincompose.widget
 
-import com.vaadin.flow.component.Component
+import io.github.kshashov.vaadincompose.BuildContext
 
-abstract class ChildSupportRenderElement<WIDGET : RenderWidget<COMPONENT>, COMPONENT : Component>(widget: WIDGET) :
-    RenderElement<WIDGET, COMPONENT>(widget), HasDebugInfo {
-    protected val elementsCache: MutableMap<String, Element<*>> = HashMap()
+/**
+ * Utility mixin to simplify interaction between element and his nested childs.
+ * Provides an ability to store nested elements in cache.
+ */
+interface HasChildsElement : HasDebugCacheInfoElement {
 
     /**
-     * Attach cached element to the three or mounts a new node for unknown child widgets.
+     * Remove obsolete entries from [getElementsCache] element cache.
+     * Obsolete elements are become [Element.State.DETACHED] or [Element.State.DISPOSED] depending on [shouldKeepDetachedElement] result.
      */
-    protected open fun removeObsoleteCache(actualCacheKeys: HashSet<String>) {
+    fun removeObsoleteCache(actualCacheKeys: Set<String>) {
+        val elementsCache = getElementsCache()
+
         elementsCache.entries.removeIf {
             val check = !actualCacheKeys.contains(it.key)
             if (check) {
@@ -28,8 +33,12 @@ abstract class ChildSupportRenderElement<WIDGET : RenderWidget<COMPONENT>, COMPO
         }
     }
 
-    protected open fun updateContextChild(childKey: String, childWidget: Widget): Element<*> {
+    /**
+     * Attach cached element to the three or mounts a new node for unknown child widgets.
+     */
+    fun updateContextChild(context: BuildContext, childKey: String, childWidget: Widget): Element<*> {
         val element: Element<*>
+        val elementsCache = getElementsCache()
 
         // Try to reuse element from cache
         if (elementsCache.containsKey(childKey)) {
@@ -50,15 +59,15 @@ abstract class ChildSupportRenderElement<WIDGET : RenderWidget<COMPONENT>, COMPO
         return element
     }
 
+    fun getElementsCache(): MutableMap<String, Element<*>>
+
     /**
      * Returns true if the element should be stored in the cache to be reused later.
      */
-    protected open fun shouldKeepDetachedElement(mutableEntry: Map.Entry<String, Element<*>>): Boolean {
+    fun shouldKeepDetachedElement(mutableEntry: Map.Entry<String, Element<*>>): Boolean {
         return false
     }
 
-    override fun getDebugInfo(): Map<String, Any>? {
-        return elementsCache.entries.associate { "cache/" + it.key to it.value }
-    }
+    override fun getDebugCacheInfo() = getElementsCache().toMap()
 }
 

@@ -61,9 +61,12 @@ abstract class BaseDataTable<T, COMPONENT : Grid<T>>(
 }
 
 abstract class BaseGridRenderElement<T, COMPONENT : Grid<T>, WIDGET : BaseDataTable<T, COMPONENT>>(widget: WIDGET) :
-    ChildSupportRenderElement<WIDGET, COMPONENT>(widget) {
-    private var reg: Registration? = null
+    RenderElement<WIDGET, COMPONENT>(widget), HasChildsElement {
+    private val cache: MutableMap<String, Element<*>> = HashMap()
     private var actualKeys: Map<T, String> = HashMap()
+    private var reg: Registration? = null
+
+    override fun getElementsCache() = cache
 
     override fun refreshComponent() {
         super.refreshComponent()
@@ -77,20 +80,17 @@ abstract class BaseGridRenderElement<T, COMPONENT : Grid<T>, WIDGET : BaseDataTa
         // Refresh columns
         component.removeAllColumns()
 
-        val buiderColumns = widget.columns.stream()
-            .filter { it.builder != null }
-            .toList()
-
-        var builderIndex = 0
-        widget.columns.forEachIndexed { index, info ->
+        var index = 0
+        widget.columns.forEach { info ->
             val column: Grid.Column<T>
             if (info.renderer != null) {
                 column = addColumn(info) { info.renderer.invoke(it) }
             } else if (info.builder != null) {
-                val index = builderIndex++
+                val builderIndex = index++
                 column = addComponentColumn(info) {
                     val key = actualKeys[it]!!
-                    val cellElement = updateContextChild("v-compose-grid$index$key", info.builder.invoke(it))
+                    val cellElement =
+                        updateContextChild(context, "v-compose-grid$builderIndex$key", info.builder.invoke(it))
                     cellElement.renderedComponent.element.removeFromParent()
                     return@addComponentColumn cellElement.renderedComponent
                 }

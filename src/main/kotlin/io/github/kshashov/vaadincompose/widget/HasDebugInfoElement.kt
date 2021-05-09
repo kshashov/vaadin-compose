@@ -1,5 +1,5 @@
 package io.github.kshashov.vaadincompose.widget
 
-interface HasDebugInfo {
+interface HasDebugInfoElement {
     fun getDebugInfo(): Map<String, Any>?
 }

@@ -3,9 +3,7 @@ package io.github.kshashov.vaadincompose.debug
 import com.vaadin.flow.component.orderedlayout.FlexLayout
 import io.github.kshashov.vaadincompose.BuildContext
 import io.github.kshashov.vaadincompose.Snapshot
-import io.github.kshashov.vaadincompose.widget.HasDebugInfo
-import io.github.kshashov.vaadincompose.widget.StatelessWidget
-import io.github.kshashov.vaadincompose.widget.Widget
+import io.github.kshashov.vaadincompose.widget.*
 import io.github.kshashov.vaadincompose.widget.components.*
 import java.util.*
 
@@ -21,7 +19,7 @@ class DebugPanel(private val horizontal: Boolean, key: String? = null) : Statele
     }
 }
 
-class DebugTree(key: String? = null) : StatelessWidget(key) {
+private class DebugTree(key: String? = null) : StatelessWidget(key) {
     override fun build(context: BuildContext): Widget {
         val bloc = Provider.of(DebugToolsBloc::class.java, context)!!
 
@@ -39,27 +37,7 @@ class DebugTree(key: String? = null) : StatelessWidget(key) {
                     },
                     columns = listOf(
                         TreeTableColumn(
-                            builder = { item: BuildContext ->
-                                val element = item.element
-                                val widget = element.widget
-
-                                var caption = widget.javaClass.simpleName
-                                if (widget.key != null) caption = "$caption (key: ${widget.key})"
-
-                                return@TreeTableColumn Container(
-                                    direction = FlexLayout.FlexDirection.ROW,
-                                    childs = listOf(
-                                        Label(caption, postProcess = {
-                                            it.style
-                                                .set("font-weight", "bold")
-                                                .set("margin", "0 10px")
-                                        }),
-                                        Label(element.javaClass.simpleName, postProcess = {
-                                            it.style.set("color", "gray")
-                                        }),
-                                    ),
-                                )
-                            },
+                            builder = { debugTreeColumnBuilder(it.element) },
                             postProcess = {
                                 it.setFlexGrow(2)
                             }
@@ -76,7 +54,7 @@ class DebugTree(key: String? = null) : StatelessWidget(key) {
 
 }
 
-class DebugDetail(key: String? = null) : StatelessWidget(key) {
+private class DebugDetail(key: String? = null) : StatelessWidget(key) {
     override fun build(context: BuildContext): Widget {
         val bloc = Provider.of(DebugToolsBloc::class.java, context)!!
 
@@ -90,23 +68,29 @@ class DebugDetail(key: String? = null) : StatelessWidget(key) {
                     secondaryBuilder = {
                         val ctx = selected.requireData()
                         val el = ctx.element
+
                         val wd = el.widget
 
                         val data = linkedMapOf(
-                            Pair("Widget", typeCell(wd)),
-                            Pair("Key", Label(Objects.toString(wd.key))),
-                            Pair("Element", typeCell(el)),
-                            Pair("Component", typeCell(el.renderedComponent)),
+                            "Widget" to typeCell(wd),
+                            "Key" to Label(Objects.toString(wd.key)),
+                            "Element" to typeCell(el),
+                            "Component" to typeCell(el.renderedComponent),
+                            "State" to Label(el.state.toString())
                         )
 
-                        if (el is HasDebugInfo && (el.getDebugInfo() != null)) {
+                        if (el is HasDebugInfoElement && (el.getDebugInfo() != null)) {
                             data.putAll(el.getDebugInfo()!!.mapValues {
-                                val detail = if (it.value is String)
-                                    Label(it.value as String)
-                                else
-                                    typeCell(it.value)
+                                val detail = when (it.value) {
+                                    is String -> Label(it.value as String)
+                                    else -> typeCell(it.value)
+                                }
                                 return@mapValues detail
                             })
+                        }
+
+                        if (el is HasDebugCacheInfoElement && (el.getDebugCacheInfo() != null)) {
+                            data["Cache"] = DebugCacheCell(el.getDebugCacheInfo()!!)
                         }
 
                         return@Conditional Details(
@@ -124,15 +108,82 @@ class DebugDetail(key: String? = null) : StatelessWidget(key) {
             })
     }
 
-    private fun typeCell(obj: Any): Widget {
-        return Label(obj(obj), postProcess = {
-            it.element.setAttribute("title", obj(obj, false))
-        })
-    }
-
-    private fun obj(obj: Any, short: Boolean = true): String {
-        val javaClass = obj.javaClass
-        return (if (short) javaClass.simpleName else javaClass.name) + "@" + Integer.toHexString(obj.hashCode())
-    }
 
 }
+
+private class DebugCacheCell(private val cache: Map<String, Element<*>>, key: String? = null) : StatelessWidget(key) {
+    private val reversed: Map<Element<*>, String> = cache.entries.associateBy({ it.value }) { it.key }
+
+    override fun build(context: BuildContext): Widget {
+        return TreeDataTable(
+            height = "100%",
+            width = "100%",
+            items = cache.values,
+            childsProvider = { it.context.childs.map { it.element } },
+            columns = listOf(
+                TreeTableColumn(
+                    builder = {
+                        var cell = debugTreeColumnBuilder(it)
+                        if (reversed.contains(it)) {
+                            val key = reversed[it]!!
+                            val label = Label(key, postProcess = {
+                                it.style.set("font-size", "smaller")
+                                it.element.setAttribute("title", key)
+                            })
+                            cell = Container(
+                                listOf(cell, label),
+                                direction = FlexLayout.FlexDirection.COLUMN,
+                                width = "100%"
+                            )
+                        }
+                        return@TreeTableColumn cell
+                    },
+                    postProcess = {
+                        it.setFlexGrow(2)
+                    }
+                )
+            ),
+            postProcess = {
+                it.minHeight = "200px"
+                it.minWidth = "200px"
+            }
+        )
+
+    }
+}
+
+private fun debugTreeColumnBuilder(element: Element<*>): Widget {
+    val widget = element.widget
+
+    var caption = widget.javaClass.simpleName
+    if (widget.key != null) caption = "$caption (key: ${widget.key})"
+
+    return Container(
+        direction = FlexLayout.FlexDirection.ROW,
+        childs = listOf(
+            Label(caption, postProcess = {
+                it.style
+                    .set("font-weight", "bold")
+                    .set("margin-right", "10px")
+                it.element.setAttribute("title", obj(widget, false))
+            }),
+            Label(element.javaClass.simpleName, postProcess = {
+                it.style.set("color", "gray")
+                it.element.setAttribute("title", obj(element, false))
+            }),
+        ),
+    )
+}
+
+private fun typeCell(obj: Any): Widget {
+    return Label(obj(obj), postProcess = {
+        it.element.setAttribute("title", obj(obj, false))
+    })
+}
+
+private fun obj(obj: Any, short: Boolean = true): String {
+    val javaClass = obj.javaClass
+    return (if (short) javaClass.simpleName else javaClass.name) + "@" + Integer.toHexString(obj.hashCode())
+}
+
+

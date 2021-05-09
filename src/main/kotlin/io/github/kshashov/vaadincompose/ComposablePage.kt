@@ -46,7 +46,7 @@ interface ComposablePage {
     fun isDebug() = true
 
     fun dispose(context: BuildContext) {
-        context.dispose()
+        context.element.dispose()
     }
 
     fun buildContext() = BuildContext.root()
