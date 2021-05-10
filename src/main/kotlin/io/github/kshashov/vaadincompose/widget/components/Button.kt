@@ -1,6 +1,7 @@
 package io.github.kshashov.vaadincompose.widget.components
 
 import com.vaadin.flow.component.Component
+import com.vaadin.flow.dom.Style
 import com.vaadin.flow.shared.Registration
 import io.github.kshashov.vaadincompose.widget.Element
 import io.github.kshashov.vaadincompose.widget.RenderElement
@@ -18,6 +19,7 @@ class Button(
     classes: Collection<String> = listOf(),
     alignItems: String? = null,
     justifyContent: String? = null,
+    styleProcess: ((style: Style) -> Unit)? = null,
     postProcess: ((component: VaadinButton) -> Unit)? = null
 ) : RenderWidget<VaadinButton>(
     key,
@@ -27,6 +29,7 @@ class Button(
     classes,
     alignItems,
     justifyContent,
+    styleProcess,
     postProcess
 ) {
 

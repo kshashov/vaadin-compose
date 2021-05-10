@@ -35,11 +35,11 @@ class Todo : Div(), ComposablePage {
                 height = "100%",
                 direction = FlexLayout.FlexDirection.COLUMN,
                 classes = listOf("main-widget"),
-                childs = listOf(
+                childs = mutableListOf(
                     Container(
                         alignItems = "baseline",
                         direction = FlexLayout.FlexDirection.ROW,
-                        childs = listOf(
+                        childs = mutableListOf(
                             StreamConsumer(
                                 initial = Snapshot.withData(""),
                                 stream = bloc.texts,
@@ -88,7 +88,7 @@ class Todo : Div(), ComposablePage {
                 alignItems = "center",
                 direction = FlexLayout.FlexDirection.ROW,
                 classes = listOf("card", "todo-item"),
-                childs = listOf(
+                childs = mutableListOf(
                     Button("x", { bloc.remove(widget.item) }),
                     Button("\uD83E\uDC17", { bloc.down(widget.item) }),
                     Button("\uD83E\uDC15", { bloc.up(widget.item) }),

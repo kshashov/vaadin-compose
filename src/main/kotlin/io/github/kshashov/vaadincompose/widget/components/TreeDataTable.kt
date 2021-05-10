@@ -3,6 +3,7 @@ package io.github.kshashov.vaadincompose.widget.components
 import com.vaadin.flow.component.Component
 import com.vaadin.flow.component.grid.Grid
 import com.vaadin.flow.component.treegrid.TreeGrid
+import com.vaadin.flow.dom.Style
 import com.vaadin.flow.function.ValueProvider
 import io.github.kshashov.vaadincompose.widget.Widget
 import java.util.stream.Stream
@@ -21,6 +22,7 @@ class TreeDataTable<T>(
     classes: Collection<String> = listOf(),
     alignItems: String? = null,
     justifyContent: String? = null,
+    styleProcess: ((style: Style) -> Unit)? = null,
     postProcess: ((TreeGrid<T>) -> Unit)? = null
 ) : BaseDataTable<T, TreeGrid<T>>(
     items,
@@ -33,6 +35,7 @@ class TreeDataTable<T>(
     classes,
     alignItems,
     justifyContent,
+    styleProcess,
     postProcess
 ) {
 

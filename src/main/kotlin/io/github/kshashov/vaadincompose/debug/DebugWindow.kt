@@ -25,9 +25,9 @@ class DebugWindow(private val child: Widget, key: String? = null) : StatelessWid
                     SplitLayout(
                         primary = child,
                         secondary = Container(
-                            listOf(
+                            mutableListOf(
                                 Container(
-                                    listOf(
+                                    mutableListOf(
                                         Button(icon = if (it.requireData()) VaadinIcon.SPLIT_V.create() else VaadinIcon.SPLIT_H.create(),
                                             onClick = { bloc.changeOrientation() },
                                             postProcess = {

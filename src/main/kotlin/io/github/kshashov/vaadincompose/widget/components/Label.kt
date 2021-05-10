@@ -1,5 +1,6 @@
 package io.github.kshashov.vaadincompose.widget.components
 
+import com.vaadin.flow.dom.Style
 import io.github.kshashov.vaadincompose.widget.Element
 import io.github.kshashov.vaadincompose.widget.RenderElement
 import io.github.kshashov.vaadincompose.widget.RenderWidget
@@ -14,8 +15,9 @@ class Label(
     classes: Collection<String> = listOf(),
     alignItems: String? = null,
     justifyContent: String? = null,
-    postProcess: ((VaadinLabel) -> Unit)? = null
-) : RenderWidget<VaadinLabel>(key, height, width, id, classes, alignItems, justifyContent, postProcess) {
+    styleProcess: ((style: Style) -> Unit)? = null,
+    postProcess: ((component: VaadinLabel) -> Unit)? = null
+) : RenderWidget<VaadinLabel>(key, height, width, id, classes, alignItems, justifyContent, styleProcess, postProcess) {
 
     override fun createElement(): Element<Label> {
         return LabelRenderElement(this)

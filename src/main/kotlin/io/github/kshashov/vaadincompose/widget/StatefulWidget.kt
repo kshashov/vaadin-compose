@@ -51,7 +51,7 @@ abstract class StatefulWidget(key: String? = null) : Widget(key) {
 
             // Rebuild context subtree
             // Bring back cached nodes or mount new nodes
-            updateContextChilds(getChild())
+            updateContextChilds(getChilds())
 
             if (renderedComponent != oldComponent) {
                 // Replace root rendered component with a new instance

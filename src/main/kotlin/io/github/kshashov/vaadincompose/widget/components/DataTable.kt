@@ -2,6 +2,7 @@ package io.github.kshashov.vaadincompose.widget.components
 
 import com.vaadin.flow.component.Component
 import com.vaadin.flow.component.grid.Grid
+import com.vaadin.flow.dom.Style
 import com.vaadin.flow.shared.Registration
 import io.github.kshashov.vaadincompose.widget.*
 import java.util.*
@@ -19,6 +20,7 @@ open class DataTable<T>(
     classes: Collection<String> = listOf(),
     alignItems: String? = null,
     justifyContent: String? = null,
+    styleProcess: ((style: Style) -> Unit)? = null,
     postProcess: ((Grid<T>) -> Unit)? = null
 ) : BaseDataTable<T, Grid<T>>(
     items,
@@ -31,6 +33,7 @@ open class DataTable<T>(
     classes,
     alignItems,
     justifyContent,
+    styleProcess,
     postProcess
 ) {
 
@@ -56,8 +59,9 @@ abstract class BaseDataTable<T, COMPONENT : Grid<T>>(
     classes: Collection<String> = listOf(),
     alignItems: String? = null,
     justifyContent: String? = null,
+    styleProcess: ((style: Style) -> Unit)? = null,
     postProcess: ((COMPONENT) -> Unit)? = null
-) : RenderWidget<COMPONENT>(key, height, width, id, classes, alignItems, justifyContent, postProcess) {
+) : RenderWidget<COMPONENT>(key, height, width, id, classes, alignItems, justifyContent, styleProcess, postProcess) {
 }
 
 abstract class BaseGridRenderElement<T, COMPONENT : Grid<T>, WIDGET : BaseDataTable<T, COMPONENT>>(widget: WIDGET) :
@@ -169,7 +173,7 @@ private class DataTableRow<T>(
 }
 
 private class DataTableRowElement<T>(widget: DataTableRow<T>) :
-    EagerChildRenderElement<DataTableRow<T>, RenderElement.EmptyWidget>(widget) {
+    EagerChildsRenderElement<DataTableRow<T>, RenderElement.EmptyWidget>(widget) {
 
     override fun getChilds(): Collection<Widget> {
         return widget.columns.stream()

@@ -131,7 +131,7 @@ private class DebugCacheCell(private val cache: Map<String, Element<*>>, key: St
                                 it.element.setAttribute("title", key)
                             })
                             cell = Container(
-                                listOf(cell, label),
+                                mutableListOf(cell, label),
                                 direction = FlexLayout.FlexDirection.COLUMN,
                                 width = "100%"
                             )
@@ -160,7 +160,7 @@ private fun debugTreeColumnBuilder(element: Element<*>): Widget {
 
     return Container(
         direction = FlexLayout.FlexDirection.ROW,
-        childs = listOf(
+        childs = mutableListOf(
             Label(caption, postProcess = {
                 it.style
                     .set("font-weight", "bold")

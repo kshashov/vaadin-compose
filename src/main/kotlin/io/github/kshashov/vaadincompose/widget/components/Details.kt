@@ -22,7 +22,7 @@ class Details(
         val rows = items.entries.stream()
             .map {
                 TableRow(
-                    listOf(
+                    mutableListOf(
                         Label(it.key, postProcess = { it.style.set("font-weight", "bold") }),
                         it.value
                     )

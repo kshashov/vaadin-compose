@@ -3,7 +3,7 @@ package io.github.kshashov.vaadincompose.widget
 import com.vaadin.flow.component.Component
 import com.vaadin.flow.component.HasComponents
 
-abstract class EagerChildRenderElement<WIDGET : RenderWidget<COMPONENT>, COMPONENT : Component>(widget: WIDGET) :
+abstract class EagerChildsRenderElement<WIDGET : RenderWidget<COMPONENT>, COMPONENT : Component>(widget: WIDGET) :
     RenderElement<WIDGET, COMPONENT>(widget), HasChildsElement {
     private val cache: MutableMap<String, Element<*>> = HashMap()
 

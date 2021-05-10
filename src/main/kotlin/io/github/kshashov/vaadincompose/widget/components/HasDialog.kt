@@ -1,35 +1,24 @@
 package io.github.kshashov.vaadincompose.widget.components
 
-import io.github.kshashov.vaadincompose.widget.*
+import io.github.kshashov.vaadincompose.widget.EagerChildsElement
+import io.github.kshashov.vaadincompose.widget.Element
+import io.github.kshashov.vaadincompose.widget.Widget
 
 class HasDialog(
     val child: Widget,
     val dialog: Dialog,
     key: String? = null
-) : RenderWidget<RenderElement.EmptyWidget>(key) {
+) : Widget(key) {
 
     override fun createElement(): Element<HasDialog> {
-        return EagerDialogRenderElement(this)
+        return HasDialogElement(this)
     }
 
-    class EagerDialogRenderElement(widget: HasDialog) :
-        EagerChildRenderElement<HasDialog, RenderElement.EmptyWidget>(widget) {
-
-        override fun updateContextChilds(list: Collection<Widget>) {
-            super.updateContextChilds(list)
-            proxyRenderedComponent()
-        }
-
-        override fun createComponent() = EMPTY_WIDGET
-
-        override fun refreshComponent() {
-            // Do nothing
-        }
-
+    class HasDialogElement(widget: HasDialog) : EagerChildsElement<HasDialog>(widget) {
         override fun getChilds() = listOf(this.widget.child, this.widget.dialog)
 
-        private fun proxyRenderedComponent() {
-            renderedComponent = context.childs[0].element.renderedComponent
+        override fun proxiedComponentIndex(): Int {
+            return 0
         }
     }
 }
