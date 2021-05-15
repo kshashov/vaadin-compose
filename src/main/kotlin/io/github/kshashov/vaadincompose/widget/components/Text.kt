@@ -1,7 +1,6 @@
 package io.github.kshashov.vaadincompose.widget.components
 
 import com.vaadin.flow.component.textfield.TextField
-import com.vaadin.flow.dom.Style
 import com.vaadin.flow.shared.Registration
 import io.github.kshashov.vaadincompose.widget.Element
 import io.github.kshashov.vaadincompose.widget.RenderElement
@@ -18,9 +17,8 @@ class Text(
     classes: Collection<String> = listOf(),
     alignItems: String? = null,
     justifyContent: String? = null,
-    styleProcess: ((style: Style) -> Unit)? = null,
-    postProcess: ((TextField) -> Unit)? = null
-) : RenderWidget<TextField>(key, height, width, id, classes, alignItems, justifyContent, styleProcess, postProcess) {
+    postProcess: (TextField.() -> Unit)? = null
+) : RenderWidget<TextField>(key, height, width, id, classes, alignItems, justifyContent, postProcess) {
 
     override fun createElement(): Element<Text> {
         return TextRenderElement(this)

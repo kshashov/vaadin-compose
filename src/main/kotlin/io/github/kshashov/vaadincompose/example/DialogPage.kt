@@ -45,12 +45,12 @@ class DialogPage : Div(), ComposablePage, BeforeEnterHandler, BeforeLeaveHandler
                 child = Container(
                     direction = FlexLayout.FlexDirection.COLUMN,
                     classes = listOf("main-widget"),
-                    childs = mutableListOf(
-                        Button("open", { setState { show = true } })
+                    childs = listOf(
+                        Button("open", onClick = { setState { show = true } })
                     )
                 ),
                 dialog = Dialog(
-                    Button("close", { setState { show = false } }),
+                    child = Button("close", onClick = { setState { show = false } }),
                     show = show
                 )
             )

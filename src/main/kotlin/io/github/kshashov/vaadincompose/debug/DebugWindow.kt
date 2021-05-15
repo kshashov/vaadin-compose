@@ -10,7 +10,7 @@ import io.github.kshashov.vaadincompose.widget.Widget
 import io.github.kshashov.vaadincompose.widget.components.*
 import com.vaadin.flow.component.splitlayout.SplitLayout.Orientation as VaadinOrientation
 
-class DebugWindow(private val child: Widget, key: String? = null) : StatelessWidget(key) {
+class DebugWindow(private val childWidget: Widget, key: String? = null) : StatelessWidget(key) {
     override fun build(context: BuildContext): Widget {
         val bloc = Provider.of(DebugToolsBloc::class.java, context)!!
 
@@ -23,30 +23,29 @@ class DebugWindow(private val child: Widget, key: String? = null) : StatelessWid
                 initial = Snapshot.withData(true),
                 builder = {
                     SplitLayout(
-                        primary = child,
+                        direction = if (it.requireData()) VaadinOrientation.HORIZONTAL else VaadinOrientation.VERTICAL,
+                        height = "100%",
+                        primary = childWidget,
                         secondary = Container(
-                            mutableListOf(
+                            direction = FlexLayout.FlexDirection.COLUMN,
+                            childs = listOf(
                                 Container(
-                                    mutableListOf(
-                                        Button(icon = if (it.requireData()) VaadinIcon.SPLIT_V.create() else VaadinIcon.SPLIT_H.create(),
-                                            onClick = { bloc.changeOrientation() },
-                                            postProcess = {
-                                                it.addThemeVariants(
-                                                    ButtonVariant.LUMO_SMALL,
-                                                    ButtonVariant.LUMO_ICON,
-                                                    ButtonVariant.LUMO_TERTIARY_INLINE
-                                                )
-                                            }
-                                        )
-                                    ),
-                                    direction = FlexLayout.FlexDirection.ROW_REVERSE
+                                    direction = FlexLayout.FlexDirection.ROW_REVERSE,
+                                    childs = listOf(
+                                        Button(
+                                            icon = if (it.requireData()) VaadinIcon.SPLIT_V.create() else VaadinIcon.SPLIT_H.create(),
+                                            onClick = { bloc.changeOrientation() }) {
+                                            addThemeVariants(
+                                                ButtonVariant.LUMO_SMALL,
+                                                ButtonVariant.LUMO_ICON,
+                                                ButtonVariant.LUMO_TERTIARY_INLINE
+                                            )
+                                        }
+                                    )
                                 ),
                                 DebugPanel(!it.requireData())
-                            ),
-                            direction = FlexLayout.FlexDirection.COLUMN
-                        ),
-                        orientation = if (it.requireData()) VaadinOrientation.HORIZONTAL else VaadinOrientation.VERTICAL,
-                        height = "100%"
+                            )
+                        )
                     )
                 }
             )

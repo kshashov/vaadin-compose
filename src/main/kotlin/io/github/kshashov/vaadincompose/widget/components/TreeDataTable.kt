@@ -3,8 +3,8 @@ package io.github.kshashov.vaadincompose.widget.components
 import com.vaadin.flow.component.Component
 import com.vaadin.flow.component.grid.Grid
 import com.vaadin.flow.component.treegrid.TreeGrid
-import com.vaadin.flow.dom.Style
 import com.vaadin.flow.function.ValueProvider
+import io.github.kshashov.vaadincompose.widget.Element
 import io.github.kshashov.vaadincompose.widget.Widget
 import java.util.stream.Stream
 import kotlin.streams.toList
@@ -22,8 +22,7 @@ class TreeDataTable<T>(
     classes: Collection<String> = listOf(),
     alignItems: String? = null,
     justifyContent: String? = null,
-    styleProcess: ((style: Style) -> Unit)? = null,
-    postProcess: ((TreeGrid<T>) -> Unit)? = null
+    postProcess: (TreeGrid<T>.() -> Unit)? = null
 ) : BaseDataTable<T, TreeGrid<T>>(
     items,
     columns,
@@ -35,16 +34,16 @@ class TreeDataTable<T>(
     classes,
     alignItems,
     justifyContent,
-    styleProcess,
     postProcess
 ) {
 
-    override fun createElement(): TreeGridRenderElement<T> {
+    override fun createElement(): Element<TreeDataTable<T>> {
         return TreeGridRenderElement(this)
     }
 
-    class TreeGridRenderElement<T>(widget: TreeDataTable<T>) :
+    internal class TreeGridRenderElement<T>(widget: TreeDataTable<T>) :
         BaseGridRenderElement<T, TreeGrid<T>, TreeDataTable<T>>(widget) {
+
         override fun createComponent(): TreeGrid<T> {
             return TreeGrid()
         }
@@ -86,10 +85,8 @@ class TreeDataTable<T>(
 class TreeTableColumn<T>(
     header: String? = null,
     sortable: Boolean = true,
-    resizable: Boolean = false,
+    resizable: Boolean = true,
     renderer: ((T) -> String)? = null,
     builder: ((T) -> Widget)? = null,
-    postProcess: ((Grid.Column<T>) -> Unit)? = null,
-) : TableColumn<T>(header, sortable, resizable, renderer, builder, postProcess) {
-
-}
+    postProcess: (Grid.Column<T>.() -> Unit)? = null
+) : TableColumn<T>(header, sortable, resizable, renderer, builder, postProcess)

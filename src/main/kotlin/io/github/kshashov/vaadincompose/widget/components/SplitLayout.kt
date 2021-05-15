@@ -1,8 +1,8 @@
 package io.github.kshashov.vaadincompose.widget.components
 
 import com.vaadin.flow.component.Component
-import com.vaadin.flow.dom.Style
 import io.github.kshashov.vaadincompose.widget.EagerChildsRenderElement
+import io.github.kshashov.vaadincompose.widget.Element
 import io.github.kshashov.vaadincompose.widget.RenderWidget
 import io.github.kshashov.vaadincompose.widget.Widget
 import com.vaadin.flow.component.splitlayout.SplitLayout as VaadinSplitLayout
@@ -10,7 +10,7 @@ import com.vaadin.flow.component.splitlayout.SplitLayout as VaadinSplitLayout
 class SplitLayout(
     val primary: Widget,
     val secondary: Widget,
-    val orientation: com.vaadin.flow.component.splitlayout.SplitLayout.Orientation? = com.vaadin.flow.component.splitlayout.SplitLayout.Orientation.HORIZONTAL,
+    val direction: VaadinSplitLayout.Orientation? = VaadinSplitLayout.Orientation.HORIZONTAL,
     key: String? = null,
     height: String? = null,
     width: String? = null,
@@ -18,8 +18,7 @@ class SplitLayout(
     classes: Collection<String> = listOf(),
     alignItems: String? = null,
     justifyContent: String? = null,
-    styleProcess: ((style: Style) -> Unit)? = null,
-    postProcess: ((VaadinSplitLayout) -> Unit)? = null
+    postProcess: (VaadinSplitLayout.() -> Unit)? = null
 ) : RenderWidget<VaadinSplitLayout>(
     key,
     height,
@@ -28,15 +27,14 @@ class SplitLayout(
     classes,
     alignItems,
     justifyContent,
-    styleProcess,
     postProcess
 ) {
 
-    override fun createElement(): SplitLayoutRenderElement {
+    override fun createElement(): Element<SplitLayout> {
         return SplitLayoutRenderElement(this)
     }
 
-    class SplitLayoutRenderElement(widget: SplitLayout) :
+    internal class SplitLayoutRenderElement(widget: SplitLayout) :
         EagerChildsRenderElement<SplitLayout, VaadinSplitLayout>(widget) {
 
         override fun createComponent(): VaadinSplitLayout {
@@ -45,7 +43,7 @@ class SplitLayout(
 
         override fun refreshComponent() {
             super.refreshComponent()
-            component.orientation = widget.orientation
+            component.orientation = widget.direction
         }
 
         override fun getChilds() = listOf(widget.primary, widget.secondary)

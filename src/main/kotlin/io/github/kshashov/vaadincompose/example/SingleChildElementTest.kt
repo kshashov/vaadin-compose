@@ -46,33 +46,35 @@ class SingleChildElementTest : Div(), ComposablePage {
                         secondaryBuilder = { Wrapper2(Text("False")) }
                     ),
                     Button("Switch stateful", {
-                            setState { switcher2 = !switcher2 }
-                        })
-                    ))
+                        setState { switcher2 = !switcher2 }
+                    })
+                )
+            )
+
         }
-    }
 
-    class Wrapper(private val child: Widget, key: String? = null) : StatelessWidget(key) {
-        override fun build(context: BuildContext): Widget {
-            return child
-        }
-    }
-
-    class Wrapper2(val child: Widget, key: String? = null) : StatefulWidget(key) {
-
-        override fun createState() = Wrapper2State(child)
-
-        class Wrapper2State(private val child: Widget) : WidgetState<Wrapper2>() {
+        class Wrapper(private val child: Widget, key: String? = null) : StatelessWidget(key) {
             override fun build(context: BuildContext): Widget {
                 return child
             }
+        }
 
-            override fun detach() {
-                super.detach()
-            }
+        class Wrapper2(val child: Widget, key: String? = null) : StatefulWidget(key) {
 
-            override fun dispose() {
-                super.dispose()
+            override fun createState() = Wrapper2State(child)
+
+            class Wrapper2State(private val child: Widget) : WidgetState<Wrapper2>() {
+                override fun build(context: BuildContext): Widget {
+                    return child
+                }
+
+                override fun detach() {
+                    super.detach()
+                }
+
+                override fun dispose() {
+                    super.dispose()
+                }
             }
         }
     }

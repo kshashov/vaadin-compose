@@ -1,5 +1,8 @@
 package io.github.kshashov.vaadincompose
 
+/**
+ * Supposed to handle the interaction with service's results. According to the result can store ether error or data.
+ */
 class Snapshot<T : Any> private constructor(val data: T?, val error: Throwable?, val state: State = State.NONE) {
     val hasData: Boolean = data != null
     val hasError: Boolean = error != null

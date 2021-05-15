@@ -10,9 +10,9 @@ import io.github.kshashov.vaadincompose.widget.Widget
  * Reperesents [FlexLayout] component with a single conditional child inside.
  */
 class Conditional(
-    val condition: Boolean,
-    val primaryBuilder: (() -> Widget),
-    val secondaryBuilder: (() -> Widget),
+    private val condition: Boolean,
+    private val primaryBuilder: (() -> Widget),
+    private val secondaryBuilder: (() -> Widget),
     key: String? = null,
 ) : Widget(key) {
 
@@ -24,7 +24,7 @@ class Conditional(
      * Swithes child widget according to [Conditional.condition] value.
      * Uses internal cache to get rid of obsolete re-creation of nested elements.
      */
-    class ConditionalRenderElement(widget: Conditional) : ProxyElement<Conditional>(widget) {
+    internal class ConditionalRenderElement(widget: Conditional) : ProxyElement<Conditional>(widget) {
         private var previousCondition: Boolean = widget.condition
         private var pairHolder: BooleanPairHolder<String> = BooleanPairHolder()
 

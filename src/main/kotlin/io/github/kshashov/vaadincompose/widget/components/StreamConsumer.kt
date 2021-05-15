@@ -7,15 +7,19 @@ import io.github.kshashov.vaadincompose.widget.Widget
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.disposables.Disposable
 
+/**
+ * Automatically subscribes and unsubscribes on the target stream and reloads nested sub-tree when a new value has been received from the stream.
+ */
 class StreamConsumer<T : Any>(
     val stream: Observable<T?>,
     val builder: (Snapshot<T>) -> Widget,
     val initial: Snapshot<T> = Snapshot.empty(),
     key: String? = null
 ) : StatefulWidget(key) {
-    override fun createState() = StreamConsumerState<T>()
 
-    class StreamConsumerState<T : Any> : WidgetState<StreamConsumer<T>>() {
+    override fun createState(): WidgetState<StreamConsumer<T>> = StreamConsumerState()
+
+    internal class StreamConsumerState<T : Any> : WidgetState<StreamConsumer<T>>() {
         private var subscription: Disposable? = null
         private var payload: Snapshot<T>? = null
         private var first = true

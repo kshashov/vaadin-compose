@@ -1,7 +1,6 @@
 package io.github.kshashov.vaadincompose.widget.components
 
 import com.vaadin.flow.component.Component
-import com.vaadin.flow.dom.Style
 import com.vaadin.flow.shared.Registration
 import io.github.kshashov.vaadincompose.widget.Element
 import io.github.kshashov.vaadincompose.widget.RenderElement
@@ -9,9 +8,9 @@ import io.github.kshashov.vaadincompose.widget.RenderWidget
 import com.vaadin.flow.component.button.Button as VaadinButton
 
 class Button(
-    val text: String? = null,
-    val onClick: (() -> Unit)? = null,
-    val icon: Component? = null,
+    private val text: String? = null,
+    private val onClick: (() -> Unit)? = null,
+    private val icon: Component? = null,
     key: String? = null,
     height: String? = null,
     width: String? = null,
@@ -19,8 +18,7 @@ class Button(
     classes: Collection<String> = listOf(),
     alignItems: String? = null,
     justifyContent: String? = null,
-    styleProcess: ((style: Style) -> Unit)? = null,
-    postProcess: ((component: VaadinButton) -> Unit)? = null
+    postProcess: (VaadinButton.() -> Unit)? = null
 ) : RenderWidget<VaadinButton>(
     key,
     height,
@@ -29,7 +27,6 @@ class Button(
     classes,
     alignItems,
     justifyContent,
-    styleProcess,
     postProcess
 ) {
 
@@ -37,7 +34,7 @@ class Button(
         return ButtonRenderElement(this)
     }
 
-    class ButtonRenderElement(widget: Button) : RenderElement<Button, VaadinButton>(widget) {
+    internal class ButtonRenderElement(widget: Button) : RenderElement<Button, VaadinButton>(widget) {
         private var reg: Registration? = null
 
         override fun createComponent(): VaadinButton {

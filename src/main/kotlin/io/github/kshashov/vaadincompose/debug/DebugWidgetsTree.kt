@@ -3,6 +3,8 @@ package io.github.kshashov.vaadincompose.debug
 import com.vaadin.flow.component.orderedlayout.FlexLayout
 import io.github.kshashov.vaadincompose.BuildContext
 import io.github.kshashov.vaadincompose.Snapshot
+import io.github.kshashov.vaadincompose.element
+import io.github.kshashov.vaadincompose.style
 import io.github.kshashov.vaadincompose.widget.*
 import io.github.kshashov.vaadincompose.widget.components.*
 import java.util.*
@@ -14,7 +16,7 @@ class DebugPanel(private val horizontal: Boolean, key: String? = null) : Statele
             width = "100%",
             primary = DebugTree(),
             secondary = DebugDetail(),
-            orientation = if (horizontal) com.vaadin.flow.component.splitlayout.SplitLayout.Orientation.HORIZONTAL else com.vaadin.flow.component.splitlayout.SplitLayout.Orientation.VERTICAL,
+            direction = if (horizontal) com.vaadin.flow.component.splitlayout.SplitLayout.Orientation.HORIZONTAL else com.vaadin.flow.component.splitlayout.SplitLayout.Orientation.VERTICAL,
         )
     }
 }
@@ -36,19 +38,15 @@ private class DebugTree(key: String? = null) : StatelessWidget(key) {
                         if (it.isNotEmpty()) bloc.select(it.firstOrNull())
                     },
                     columns = listOf(
-                        TreeTableColumn(
-                            builder = { debugTreeColumnBuilder(it.element) },
-                            postProcess = {
-                                it.setFlexGrow(2)
-                            }
-                        )
-                    ),
-                    postProcess = {
-                        it.expandRecursively(listOf(ctx.requireData()), 10000)
-                        it.minHeight = "300px"
-                        it.minWidth = "300px"
-                    }
-                )
+                        TreeTableColumn(builder = { debugTreeColumnBuilder(it.element) }) {
+                            setFlexGrow(2)
+                        }
+
+                    )) {
+                    expandRecursively(listOf(ctx.requireData()), 10000)
+                    minHeight = "300px"
+                    minWidth = "300px"
+                }
             })
     }
 
@@ -96,19 +94,15 @@ private class DebugDetail(key: String? = null) : StatelessWidget(key) {
                         return@Conditional Details(
                             data,
                             width = "100%",
-                            height = "100%",
-                            postProcess = {
-                                it.minHeight = "300px"
-                                it.minWidth = "300px"
-                            }
-                        )
+                            height = "100%"
+                        ) {
+                            minHeight = "300px"
+                            minWidth = "300px"
+                        }
                     }
-
                 )
             })
     }
-
-
 }
 
 private class DebugCacheCell(private val cache: Map<String, Element<*>>, key: String? = null) : StatelessWidget(key) {
@@ -126,10 +120,10 @@ private class DebugCacheCell(private val cache: Map<String, Element<*>>, key: St
                         var cell = debugTreeColumnBuilder(it)
                         if (reversed.contains(it)) {
                             val key = reversed[it]!!
-                            val label = Label(key, postProcess = {
-                                it.style.set("font-size", "smaller")
-                                it.element.setAttribute("title", key)
-                            })
+                            val label = Label(key) {
+                                style { set("font-size", "smaller") }
+                                element { setAttribute("title", key) }
+                            }
                             cell = Container(
                                 mutableListOf(cell, label),
                                 direction = FlexLayout.FlexDirection.COLUMN,
@@ -137,18 +131,13 @@ private class DebugCacheCell(private val cache: Map<String, Element<*>>, key: St
                             )
                         }
                         return@TreeTableColumn cell
-                    },
-                    postProcess = {
-                        it.setFlexGrow(2)
-                    }
-                )
-            ),
-            postProcess = {
-                it.minHeight = "200px"
-                it.minWidth = "200px"
-            }
-        )
-
+                    }) {
+                    setFlexGrow(2)
+                }
+            )) {
+            minHeight = "200px"
+            minWidth = "200px"
+        }
     }
 }
 
@@ -161,29 +150,32 @@ private fun debugTreeColumnBuilder(element: Element<*>): Widget {
     return Container(
         direction = FlexLayout.FlexDirection.ROW,
         childs = mutableListOf(
-            Label(caption, postProcess = {
-                it.style
-                    .set("font-weight", "bold")
-                    .set("margin-right", "10px")
-                it.element.setAttribute("title", obj(widget, false))
-            }),
-            Label(element.javaClass.simpleName, postProcess = {
-                it.style.set("color", "gray")
-                it.element.setAttribute("title", obj(element, false))
-            }),
+            Label(caption) {
+                style {
+                    set("font-weight", "bold")
+                    set("margin-right", "10px")
+                }
+                element { setAttribute("title", obj(widget, false)) }
+            },
+            Label(element.javaClass.simpleName) {
+                style {
+                    set("color", "gray")
+                }
+                element { setAttribute("title", obj(element, false)) }
+            },
         ),
     )
 }
 
 private fun typeCell(obj: Any): Widget {
-    return Label(obj(obj), postProcess = {
-        it.element.setAttribute("title", obj(obj, false))
-    })
+    return Label(obj(obj)) {
+        element {
+            setAttribute("title", obj(obj, false))
+        }
+    }
 }
 
 private fun obj(obj: Any, short: Boolean = true): String {
     val javaClass = obj.javaClass
     return (if (short) javaClass.simpleName else javaClass.name) + "@" + Integer.toHexString(obj.hashCode())
 }
-
-

@@ -13,7 +13,7 @@ abstract class EagerChildsElement<WIDGET : Widget>(widget: WIDGET) : Element<WID
     override fun getElementsCache() = cache
 
     override fun render(context: BuildContext): Component {
-        return renderedComponent
+        return if (proxiedComponentIndex() >= 0) renderedComponent else RenderElement.EMPTY_WIDGET
     }
 
     protected abstract fun getChilds(): Collection<Widget>

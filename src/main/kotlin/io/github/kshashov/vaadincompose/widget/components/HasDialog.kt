@@ -5,8 +5,8 @@ import io.github.kshashov.vaadincompose.widget.Element
 import io.github.kshashov.vaadincompose.widget.Widget
 
 class HasDialog(
-    val child: Widget,
-    val dialog: Dialog,
+    private val child: Widget,
+    private val dialog: Dialog,
     key: String? = null
 ) : Widget(key) {
 
@@ -14,7 +14,7 @@ class HasDialog(
         return HasDialogElement(this)
     }
 
-    class HasDialogElement(widget: HasDialog) : EagerChildsElement<HasDialog>(widget) {
+    internal class HasDialogElement(widget: HasDialog) : EagerChildsElement<HasDialog>(widget) {
         override fun getChilds() = listOf(this.widget.child, this.widget.dialog)
 
         override fun proxiedComponentIndex(): Int {
