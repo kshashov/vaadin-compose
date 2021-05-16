@@ -3,6 +3,8 @@ package io.github.kshashov.vaadincompose.example
 import com.vaadin.flow.component.dependency.CssImport
 import com.vaadin.flow.component.html.Div
 import com.vaadin.flow.component.orderedlayout.FlexLayout
+import com.vaadin.flow.router.BeforeEnterEvent
+import com.vaadin.flow.router.BeforeEnterObserver
 import com.vaadin.flow.router.Route
 import io.github.kshashov.vaadincompose.BuildContext
 import io.github.kshashov.vaadincompose.ComposablePage
@@ -15,10 +17,18 @@ import io.reactivex.rxjava3.subjects.BehaviorSubject
 
 @CssImport("./styles/styles.css")
 @Route("")
-class Todo : Div(), ComposablePage {
+class Todo : Div(), ComposablePage, BeforeEnterObserver {
 
     init {
         setSizeFull()
+    }
+
+    override fun beforeEnter(event: BeforeEnterEvent?) {
+        init()
+    }
+
+    override fun isDebug(): Boolean {
+        return true
     }
 
     override fun build(context: BuildContext): Widget {

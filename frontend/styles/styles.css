@@ -1,3 +1,8 @@
+:root {
+    padding: 10px;
+    box-sizing: border-box;
+}
+
 .main-widget {
     padding: 10px;
 }

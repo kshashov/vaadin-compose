@@ -5,7 +5,6 @@ import io.github.kshashov.vaadincompose.debug.DebugToolsBloc
 import io.github.kshashov.vaadincompose.debug.DebugWindow
 import io.github.kshashov.vaadincompose.widget.Widget
 import io.github.kshashov.vaadincompose.widget.components.Provider
-import javax.annotation.PostConstruct
 
 /**
  * Should be used to add Compose support to Vaadin routes.
@@ -15,7 +14,6 @@ interface ComposablePage {
     /**
      * Should be invoked when the page is ready to add a rendered Vaadin Component.
      */
-    @PostConstruct
     fun init(): BuildContext {
         if (this !is HasComponents) {
             throw NotImplementedError("ComposablePage is only supported for HasComponents")

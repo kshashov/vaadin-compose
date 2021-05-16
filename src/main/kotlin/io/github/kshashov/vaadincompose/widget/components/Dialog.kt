@@ -6,6 +6,9 @@ import io.github.kshashov.vaadincompose.widget.RenderWidget
 import io.github.kshashov.vaadincompose.widget.Widget
 import com.vaadin.flow.component.dialog.Dialog as VaadinDialog
 
+/**
+ * Should be used as a child for [HasDialog] widget.
+ */
 class Dialog(
     private val child: Widget,
     private val show: Boolean,
