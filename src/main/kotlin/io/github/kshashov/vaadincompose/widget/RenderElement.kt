@@ -5,6 +5,9 @@ import com.vaadin.flow.component.Tag
 import com.vaadin.flow.dom.ElementConstants
 import io.github.kshashov.vaadincompose.BuildContext
 
+/**
+ *  Intended to generate Vaadin Components according to widget's properties.
+ */
 abstract class RenderElement<WIDGET : RenderWidget<COMPONENT>, COMPONENT : Component>(widget: WIDGET) :
     Element<WIDGET>(widget) {
     protected lateinit var component: COMPONENT

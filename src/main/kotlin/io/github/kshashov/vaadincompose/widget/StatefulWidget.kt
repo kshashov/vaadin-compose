@@ -1,7 +1,11 @@
 package io.github.kshashov.vaadincompose.widget
 
 import io.github.kshashov.vaadincompose.BuildContext
+import io.github.kshashov.vaadincompose.widget.StatefulWidget.WidgetState
 
+/**
+ * Supposed to be used as the base class when the widget properties need to change based on user interaction or other factors. Stores mutable state in [WidgetState] instance.
+ */
 abstract class StatefulWidget(key: String? = null) : Widget(key) {
     override fun createElement(): Element<StatefulWidget> {
         return StatefulElement(this)
