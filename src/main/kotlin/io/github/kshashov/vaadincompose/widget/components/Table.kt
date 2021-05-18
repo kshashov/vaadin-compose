@@ -42,7 +42,6 @@ class Table(
             items = items,
             columns = tableColumns,
             onSelection = null,
-            key = key,
             height = height,
             width = width,
             id = id,

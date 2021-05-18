@@ -43,7 +43,6 @@ class Details(
                 ColumnInfo("Property", resizable = true, sortable = false),
                 ColumnInfo("Value", resizable = true, sortable = false)
             ),
-            key = key,
             height = details.height,
             width = details.width,
             id = details.id,
