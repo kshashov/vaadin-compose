@@ -1,5 +1,6 @@
 package io.github.kshashov.vaadincompose.widget.components
 
+import com.vaadin.flow.component.Component
 import com.vaadin.flow.component.orderedlayout.FlexLayout
 import io.github.kshashov.vaadincompose.widget.EagerChildsRenderElement
 import io.github.kshashov.vaadincompose.widget.Element
@@ -35,5 +36,25 @@ class Container(
         }
 
         override fun getChilds() = this.widget.childs
+
+        override fun getComponentsCount(): Int {
+            return component.componentCount
+        }
+
+        override fun getComponentAtIndex(index: Int): Component {
+            return component.getComponentAt(index)
+        }
+
+        override fun addComponentAtIndex(index: Int, newComponent: Component) {
+            component.addComponentAtIndex(index, newComponent)
+        }
+
+        override fun replaceComponentAtIndex(index: Int, oldComponent: Component, newComponent: Component) {
+            component.replace(oldComponent, newComponent)
+        }
+
+        override fun removeExtraComponentAtIndex(index: Int, componentAtIndex: Component) {
+            component.remove(componentAtIndex)
+        }
     }
 }

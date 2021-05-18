@@ -46,17 +46,39 @@ abstract class EagerChildsRenderElement<WIDGET : RenderWidget<COMPONENT>, COMPON
     override fun refreshComponent() {
         super.refreshComponent()
 
-        // TODO do not remove component childs
-        doRemoveAll()
-
         // Populate component according actual childs
-        for (childContext in context.childs) {
-            if (shouldAddElement(childContext.element)) {
-                val childComponent = childContext.element.renderedComponent
-                doAdd(childComponent)
+        var index = 0
+        for (newChildContext in context.childs) {
+            if (shouldAddElement(newChildContext.element)) {
+                val newComponent = newChildContext.element.renderedComponent
+
+                // We already have a component at this index
+                if (index < getComponentsCount()) {
+                    val oldComponent = getComponentAtIndex(index)
+
+                    // Replace old component with a new instance
+                    if (!oldComponent.equals(newComponent)) {
+                        replaceComponentAtIndex(index, oldComponent, newComponent);
+                    }
+                } else {
+                    addComponentAtIndex(index, newComponent)
+                }
+
+                index++;
             }
         }
+
+        // Remove extra components
+        for (left in context.childs.size until getComponentsCount()) {
+            removeExtraComponentAtIndex(left, getComponentAtIndex(left))
+        }
     }
+
+    protected abstract fun getComponentsCount(): Int
+    protected abstract fun getComponentAtIndex(index: Int): Component
+    protected abstract fun addComponentAtIndex(index: Int, newComponent: Component)
+    protected abstract fun replaceComponentAtIndex(index: Int, oldComponent: Component, newComponent: Component)
+    protected abstract fun removeExtraComponentAtIndex(index: Int, componentAtIndex: Component)
 
     protected open fun doRemoveAll() {
         (component as HasComponents).removeAll()

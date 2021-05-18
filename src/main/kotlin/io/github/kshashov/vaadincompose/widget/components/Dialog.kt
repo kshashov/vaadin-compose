@@ -1,5 +1,6 @@
 package io.github.kshashov.vaadincompose.widget.components
 
+import com.vaadin.flow.component.Component
 import io.github.kshashov.vaadincompose.widget.EagerChildsRenderElement
 import io.github.kshashov.vaadincompose.widget.Element
 import io.github.kshashov.vaadincompose.widget.RenderWidget
@@ -38,5 +39,27 @@ class Dialog(
         }
 
         override fun getChilds() = listOf(this.widget.child)
+
+        override fun getComponentsCount(): Int {
+            return component.children.count().toInt()
+        }
+
+        override fun getComponentAtIndex(index: Int): Component {
+            return component.children.findFirst().get()
+        }
+
+        override fun replaceComponentAtIndex(index: Int, oldComponent: Component, newComponent: Component) {
+            component.removeAll()
+            component.add(newComponent)
+        }
+
+        override fun addComponentAtIndex(index: Int, newComponent: Component) {
+            component.add(newComponent)
+        }
+
+        override fun removeExtraComponentAtIndex(index: Int, componentAtIndex: Component) {
+            // We always have a single child here!
+            throw NotImplementedError()
+        }
     }
 }

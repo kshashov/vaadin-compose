@@ -59,5 +59,30 @@ class SplitLayout(
                 component.addToSecondary(child)
             }
         }
+
+        override fun getComponentsCount(): Int {
+            return component.children.count().toInt()
+        }
+
+        override fun getComponentAtIndex(index: Int): Component {
+            return if (index == 0) component.primaryComponent else component.secondaryComponent
+        }
+
+        override fun replaceComponentAtIndex(index: Int, oldComponent: Component, newComponent: Component) {
+            addComponentAtIndex(index, newComponent)
+        }
+
+        override fun addComponentAtIndex(index: Int, newComponent: Component) {
+            if (index == 0) {
+                component.addToPrimary(newComponent)
+            } else {
+                component.addToSecondary(newComponent)
+            }
+        }
+
+        override fun removeExtraComponentAtIndex(index: Int, componentAtIndex: Component) {
+            // We always have two childs here!
+            throw NotImplementedError()
+        }
     }
 }
