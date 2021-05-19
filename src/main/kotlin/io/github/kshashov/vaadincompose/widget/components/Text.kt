@@ -32,11 +32,15 @@ class Text(
         }
 
         override fun refreshComponent() {
-            super.refreshComponent();
+            super.refreshComponent()
+
+            if (widgetPropertyIsChanged { it.label }) {
+                component.label = widget.label
+            }
 
             reg?.remove()
 
-            component.label = widget.label
+            // Dont check old widget because the value could be changed from ui
             component.value = widget.text
 
             val onChanged = widget.onChange

@@ -60,7 +60,7 @@ abstract class BaseDataTable<T, COMPONENT : Grid<T>>(
     internal abstract class BaseGridRenderElement<T, COMPONENT : Grid<T>, WIDGET : BaseDataTable<T, COMPONENT>>(widget: WIDGET) :
         RenderElement<WIDGET, COMPONENT>(widget), HasChildsElement {
         private val cache: MutableMap<String, Element<*>> = HashMap()
-        private var actualKeys: Map<T, String> = HashMap()
+        private val actualKeys: MutableMap<T, String> = HashMap()
         private var reg: Registration? = null
 
         override fun getElementsCache() = cache
@@ -68,58 +68,64 @@ abstract class BaseDataTable<T, COMPONENT : Grid<T>>(
         override fun refreshComponent() {
             super.refreshComponent()
 
-            val items = widget.items
-
-            actualKeys = createActualKeys(items)
-
-            removeObsoleteCache(actualKeys.values.toHashSet())
+            // Prepare cache and actual case according to new items
+            if (widgetPropertyIsChanged { it.items }) {
+                actualKeys.clear()
+                actualKeys.putAll(createActualKeys(widget.items))
+                removeObsoleteCache(actualKeys.values.toHashSet())
+            }
 
             // Refresh columns
-            component.removeAllColumns()
+            if (widgetPropertyIsChanged { it.columns }) {
+                component.removeAllColumns()
 
-            var index = 0
-            widget.columns.forEach { info ->
-                val column: Grid.Column<T>
-                if (info.renderer != null) {
-                    column = addColumn(info) { info.renderer.invoke(it) }
-                } else if (info.builder != null) {
-                    val builderIndex = index++
-                    column = addComponentColumn(info) {
-                        val key = actualKeys[it]!!
-                        val cellElement =
-                            updateContextChild(context, "v-compose-grid$builderIndex$key", info.builder.invoke(it))
-                        cellElement.renderedComponent.element.removeFromParent()
-                        return@addComponentColumn cellElement.renderedComponent
+                var index = 0
+                widget.columns.forEach { info ->
+                    val column: Grid.Column<T>
+                    if (info.renderer != null) {
+                        column = addColumn(info) { info.renderer.invoke(it) }
+                    } else if (info.builder != null) {
+                        val builderIndex = index++
+                        column = addComponentColumn(info) {
+                            val key = actualKeys[it]!!
+                            val cellElement =
+                                updateContextChild(context, "v-compose-grid$builderIndex$key", info.builder.invoke(it))
+                            cellElement.renderedComponent.element.removeFromParent()
+                            return@addComponentColumn cellElement.renderedComponent
+                        }
+                    } else {
+                        throw IllegalStateException()
                     }
-                } else {
-                    throw IllegalStateException()
+
+                    if (info.header != null) {
+                        column.setHeader(info.header)
+                    }
+
+                    column.isSortable = info.sortable
+                    column.isResizable = info.resizable
+
+                    info.postProcess?.invoke(column)
                 }
+            }
 
-                if (info.header != null) {
-                    column.setHeader(info.header)
-                }
+            reg?.remove()
 
-                column.isSortable = info.sortable
-                column.isResizable = info.resizable
+            if (widgetPropertyIsChanged { it.items }) {
+                // Refresh items
+                val selected = component.selectedItems
+                setGridItems(widget.items)
 
-                info.postProcess?.invoke(column)
+                // Restore selection
+                selected.forEach { component.select(it) }
             }
 
             // Refresh selection listener
-            reg?.remove()
-
             val onSelection = widget.onSelection
             if (onSelection != null) {
                 reg = component.addSelectionListener {
                     onSelection.invoke(it.allSelectedItems)
                 }
             }
-
-            // Refresh items
-            val selected = component.selectedItems
-            setGridItems(widget.items)
-            // Restore selection
-            selected.forEach { component.select(it) }
         }
 
         protected open fun addColumn(info: TableColumn<T>, provider: (row: T) -> String): Grid.Column<T> {

@@ -27,8 +27,11 @@ class Label(
         }
 
         override fun refreshComponent() {
-            super.refreshComponent();
-            component.text = widget.text
+            super.refreshComponent()
+
+            if (widgetPropertyIsChanged { it.text }) {
+                component.text = widget.text
+            }
         }
     }
 }

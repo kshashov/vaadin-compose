@@ -1,11 +1,10 @@
 package io.github.kshashov.vaadincompose.example
 
 import com.vaadin.flow.component.dependency.CssImport
-import com.vaadin.flow.component.html.Div
 import com.vaadin.flow.component.orderedlayout.FlexLayout
 import com.vaadin.flow.router.Route
+import io.github.kshashov.vaadincompose.BaseComposablePage
 import io.github.kshashov.vaadincompose.BuildContext
-import io.github.kshashov.vaadincompose.ComposablePage
 import io.github.kshashov.vaadincompose.widget.StatefulWidget
 import io.github.kshashov.vaadincompose.widget.StatelessWidget
 import io.github.kshashov.vaadincompose.widget.Widget
@@ -13,7 +12,7 @@ import io.github.kshashov.vaadincompose.widget.components.*
 
 @CssImport("./styles/styles.css")
 @Route("singlechild")
-class SingleChildElementTest : Div(), ComposablePage {
+class SingleChildElementTest : BaseComposablePage() {
 
     override fun build(context: BuildContext): Widget {
         return MainWidget()

@@ -44,19 +44,21 @@ class Button(
         override fun refreshComponent() {
             super.refreshComponent();
 
-            reg?.remove()
-
-            if (widget.text != null) {
-                component.text = widget.text!!
+            if (widgetPropertyIsChanged { it.text }) {
+                component.text = widget.text
             }
 
-            if (widget.icon != null) {
-                component.icon = widget.icon!!
+            if (widgetPropertyIsChanged { it.icon }) {
+                component.icon = widget.icon
             }
 
-            val action = widget.onClick
-            if (action != null) {
-                reg = component.addClickListener { action.invoke() }
+            if (widgetPropertyIsChanged { it.onClick }) {
+                reg?.remove()
+
+                val action = widget.onClick
+                if (action != null) {
+                    reg = component.addClickListener { action.invoke() }
+                }
             }
         }
     }

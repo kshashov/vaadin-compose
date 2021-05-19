@@ -5,7 +5,6 @@ import com.vaadin.flow.component.orderedlayout.FlexLayout
 import com.vaadin.flow.router.Route
 import io.github.kshashov.vaadincompose.BaseComposablePage
 import io.github.kshashov.vaadincompose.BuildContext
-import io.github.kshashov.vaadincompose.ComposablePage
 import io.github.kshashov.vaadincompose.style
 import io.github.kshashov.vaadincompose.widget.StatefulWidget
 import io.github.kshashov.vaadincompose.widget.Widget
@@ -15,7 +14,7 @@ import io.github.kshashov.vaadincompose.widget.components.Label
 
 @CssImport("./styles/styles.css")
 @Route("counter")
-class Counter : BaseComposablePage(), ComposablePage {
+class Counter : BaseComposablePage() {
 
     override fun build(context: BuildContext) = MainWidget()
 
