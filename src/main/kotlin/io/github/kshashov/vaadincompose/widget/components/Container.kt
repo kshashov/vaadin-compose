@@ -31,7 +31,10 @@ class Container(
 
         override fun refreshComponent() {
             super.refreshComponent()
-            component.setFlexDirection(widget.direction)
+
+            if (widgetPropertyIsChanged { it.direction }) {
+                component.setFlexDirection(widget.direction)
+            }
         }
 
         override fun getChilds() = this.widget.childs

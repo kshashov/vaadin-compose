@@ -15,12 +15,6 @@ abstract class StatefulWidget(key: String? = null) : Widget(key) {
 
     class StatefulElement(widget: StatefulWidget) : ProxyElement<StatefulWidget>(widget) {
         private var widgetState: WidgetState<*> = widget.createState()
-        private var oldWidget: StatefulWidget? = null
-
-        override fun onBeforeWidgetRefresh() {
-            super.onBeforeWidgetRefresh()
-            oldWidget = widget
-        }
 
         override fun getChild(): Widget {
             return widgetState.build(context)
@@ -72,7 +66,7 @@ abstract class StatefulWidget(key: String? = null) : Widget(key) {
 
         override fun detach() {
             super.detach()
-            widgetState.detach();
+            widgetState.detach()
         }
 
         override fun dispose() {

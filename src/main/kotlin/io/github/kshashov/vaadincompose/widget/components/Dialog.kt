@@ -34,7 +34,10 @@ class Dialog(
 
         override fun refreshComponent() {
             super.refreshComponent()
-            component.isOpened = widget.show
+
+            if (widgetPropertyIsChanged { it.show }) {
+                component.isOpened = widget.show
+            }
         }
 
         override fun getChilds() = listOf(this.widget.child)

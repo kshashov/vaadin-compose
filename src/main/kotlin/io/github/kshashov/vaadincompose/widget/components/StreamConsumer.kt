@@ -44,8 +44,8 @@ class StreamConsumer<T : Any>(
         override fun attach(oldWidget: StatefulWidget) {
             super.attach(oldWidget)
             if ((oldWidget as StreamConsumer<*>).stream != widget.stream) {
-                unsubscribe();
-                subscribe();
+                unsubscribe()
+                subscribe()
             }
         }
 
