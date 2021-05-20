@@ -1,11 +1,10 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-	id("org.springframework.boot") version "2.4.5"
-	id("io.spring.dependency-management") version "1.0.11.RELEASE"
-	id("com.vaadin") version "0.14.3.7"
+	id("war")
+	id("org.gretty") version "3.0.4"
+	id("com.vaadin") version "0.14.6.0"
 	kotlin("jvm") version "1.4.32"
-	kotlin("plugin.spring") version "1.4.32"
 }
 
 group = "io.github.kshashov"
@@ -19,27 +18,30 @@ configurations {
 }
 
 repositories {
+	jcenter()
 	mavenCentral()
+}
+
+gretty {
+	contextPath = "/"
+	servletContainer = "jetty9.4"
 }
 
 extra["vaadinVersion"] = "14.5.3"
 
 dependencies {
-	implementation("com.vaadin:vaadin-spring-boot-starter")
+	implementation(enforcedPlatform("com.vaadin:vaadin-bom:14.6.0"))
+
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
 	implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
 	implementation("io.reactivex.rxjava3:rxjava:3.0.12")
+	implementation("com.vaadin:vaadin-core")
 
-	compileOnly("org.projectlombok:lombok")
-	annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
+	compileOnly("org.projectlombok:lombok:1.18.20")
+	compileOnly("javax.servlet:javax.servlet-api:3.1.0")
+
 	annotationProcessor("org.projectlombok:lombok")
-	testImplementation("org.springframework.boot:spring-boot-starter-test")
-}
 
-dependencyManagement {
-	imports {
-		mavenBom("com.vaadin:vaadin-bom:${property("vaadinVersion")}")
-	}
 }
 
 tasks.withType<KotlinCompile> {
