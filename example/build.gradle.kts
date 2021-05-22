@@ -1,10 +1,11 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-//	id("war")
-	id("org.gretty") version "3.0.4"
+	id("org.springframework.boot") version "2.4.5"
+	id("io.spring.dependency-management") version "1.0.11.RELEASE"
 	id("com.vaadin") version "0.14.6.0"
 	kotlin("jvm") version "1.4.32"
+	kotlin("plugin.spring") version "1.4.32"
 }
 
 group = "io.github.kshashov"
@@ -24,21 +25,18 @@ repositories {
 	maven { setUrl("https://jitpack.io") }
 }
 
-gretty {
-
-contextPath = "/"
-	servletContainer = "jetty9.4"
+dependencyManagement {
+	imports {
+		mavenBom("com.vaadin:vaadin-bom:14.6.0")
+	}
 }
 
 dependencies {
+	implementation("com.vaadin:vaadin-spring-boot-starter")
 	implementation("io.github.kshashov:vaadin-compose:0.0.6")
-	implementation(enforcedPlatform("com.vaadin:vaadin-bom:14.6.0"))
-
-	implementation("com.vaadin:vaadin-core")
 	implementation("io.reactivex.rxjava3:rxjava:3.0.12")
 
-	implementation("org.slf4j:slf4j-simple:1.7.30")
-	compileOnly("javax.servlet:javax.servlet-api:3.1.0")
+	annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
 
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
 	implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
