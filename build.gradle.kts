@@ -50,7 +50,6 @@ dependencies {
 // Use `./gradlew release` to create a tagged release commit
 release {
     scmAdapters = mutableListOf<Class<out net.researchgate.release.BaseScmAdapter>>(GitAdapter::class.java)
-//    pushReleaseVersionBranch = "main"
     tagCommitMessage = "Creating tag:"
     newVersionCommitMessage = "New version commit:"
     preTagCommitMessage = "Pre tag commit:"

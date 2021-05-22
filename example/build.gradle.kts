@@ -21,6 +21,7 @@ repositories {
 	jcenter()
 //	mavenLocal()
 	mavenCentral()
+	maven { setUrl("https://jitpack.io") }
 }
 
 gretty {
@@ -29,7 +30,7 @@ gretty {
 }
 
 dependencies {
-	implementation("io.github.kshashov:vaadin-compose:0.0.3-SNAPSHOT")
+	implementation("io.github.kshashov:vaadin-compose:0.0.3")
 	implementation(enforcedPlatform("com.vaadin:vaadin-bom:14.6.0"))
 
 	implementation("com.vaadin:vaadin-core")
