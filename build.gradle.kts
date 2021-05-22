@@ -54,7 +54,7 @@ release {
     tagCommitMessage = "Creating tag:"
     newVersionCommitMessage = "New version commit:"
     preTagCommitMessage = "Pre tag commit:"
-    tagTemplate = "${project.version}"
+    tagTemplate = "\$version"
 
     with(getProperty("git") as GitAdapter.GitConfig) {
         requireBranch = "feature/1"
