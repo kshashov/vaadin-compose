@@ -30,7 +30,7 @@ gretty {
 }
 
 dependencies {
-	implementation("io.github.kshashov:vaadin-compose:0.0.3")
+	implementation("io.github.kshashov:vaadin-compose:0.0.6")
 	implementation(enforcedPlatform("com.vaadin:vaadin-bom:14.6.0"))
 
 	implementation("com.vaadin:vaadin-core")
