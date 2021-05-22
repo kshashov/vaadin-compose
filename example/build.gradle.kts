@@ -8,7 +8,7 @@ plugins {
 }
 
 group = "io.github.kshashov"
-version = "0.0.1-SNAPSHOT"
+version = "0.0.3-SNAPSHOT"
 java.sourceCompatibility = JavaVersion.VERSION_1_8
 
 configurations {
@@ -19,7 +19,7 @@ configurations {
 
 repositories {
 	jcenter()
-	mavenLocal()
+//	mavenLocal()
 	mavenCentral()
 }
 

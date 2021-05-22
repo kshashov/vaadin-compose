@@ -1,7 +1,8 @@
 # Vaadin Compose
 
-[![CircleCI](https://circleci.com/gh/kshashov/vaadin-compose.svg?style=svg)](https://circleci.
-com/gh/kshashov/vaadin-compose)
+[![JitPack](https://jitpack.io/v/kshashov/vaadin-compose.svg)](https://jitpack.io/#kshashov/vaadin-compose)
+[![Build Status](https://travis-ci.com/kshashov/vaadin-compose.svg?branch=main)](https://travis-ci.com/kshashov/vaadin-compose)
+[![codecov](https://codecov.io/gh/kshashov/vaadin-compose/branch/main/graph/badge.svg?token=3N9RLWMRQT)](https://codecov.io/gh/kshashov/vaadin-compose)
 
 ![Counter](/img/vaadin-compose-counter.gif "Counter")
 
@@ -10,7 +11,7 @@ com/gh/kshashov/vaadin-compose)
 @CssImport("./styles/styles.css")
 class Counter : BaseComposablePage(), ComposablePage {
 
-    override fun build(context: BuildContext) = MainWidget()
+   override fun build(context: BuildContext) = MainWidget()
 
    class MainWidget : StatefulWidget() {
       override fun createState() = MainState()
@@ -35,6 +36,43 @@ class Counter : BaseComposablePage(), ComposablePage {
          }
       }
    }
+}
+```
+
+## Install
+
+### Maven
+
+```xml
+
+<repositories>
+   <repository>
+      <id>jitpack.io</id>
+      <url>https://jitpack.io</url>
+   </repository>
+</repositories>
+
+<dependencies>
+<dependency>
+   <groupId>com.github.kshashov</groupId>
+   <artifactId>vaadin-compose</artifactId>
+   <version>VERSION</version>
+</dependency>
+</dependencies>
+```
+
+### Gradle
+
+```groovy
+allprojects {
+   repositories {
+      ...
+      maven { url 'https://jitpack.io' }
+   }
+}
+
+dependencies {
+   implementation 'com.github.kshashov:vaadin-compose:VERSION'
 }
 ```
 
@@ -230,16 +268,16 @@ new custom DSL:
 override fun build(context: BuildContext): Widget {
    return ui {
       container {
-            direction = FlexLayout.FlexDirection.COLUMN
-            classes = listOf("main-widget")
+         direction = FlexLayout.FlexDirection.COLUMN
+         classes = listOf("main-widget")
 
-            label("Counter: $counter") {
-                style { set("font-weight", "bold") }
+         label("Counter: $counter") {
+            style { set("font-weight", "bold") }
+         }
+         button("+1") {
+            onClick = {
+               setState { counter++ }
             }
-            button("+1") {
-                onClick = {
-                    setState { counter++ }
-                }
             }
         }
     }
