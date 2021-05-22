@@ -1,7 +1,7 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-	id("war")
+//	id("war")
 	id("org.gretty") version "3.0.4"
 	id("com.vaadin") version "0.14.6.0"
 	kotlin("jvm") version "1.4.32"
@@ -25,7 +25,8 @@ repositories {
 }
 
 gretty {
-	contextPath = "/"
+
+contextPath = "/"
 	servletContainer = "jetty9.4"
 }
 
