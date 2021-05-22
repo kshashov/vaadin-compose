@@ -1,6 +1,7 @@
-# vaadin-compose
+# Vaadin Compose
 
-Vaadin Compose Plugin
+[![CircleCI](https://circleci.com/gh/kshashov/vaadin-compose.svg?style=svg)](https://circleci.
+com/gh/kshashov/vaadin-compose)
 
 ![Counter](/img/vaadin-compose-counter.gif "Counter")
 
@@ -9,7 +10,7 @@ Vaadin Compose Plugin
 @CssImport("./styles/styles.css")
 class Counter : BaseComposablePage(), ComposablePage {
 
-   override fun build(context: BuildContext) = MainWidget()
+    override fun build(context: BuildContext) = MainWidget()
 
    class MainWidget : StatefulWidget() {
       override fun createState() = MainState()

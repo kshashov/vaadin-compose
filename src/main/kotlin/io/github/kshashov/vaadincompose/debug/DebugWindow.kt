@@ -13,9 +13,6 @@ import com.vaadin.flow.component.splitlayout.SplitLayout.Orientation as VaadinOr
 class DebugWindow(private val childWidget: Widget, key: String? = null) : StatelessWidget(key) {
     override fun build(context: BuildContext): Widget {
         val bloc = Provider.of(DebugToolsBloc::class.java, context)!!
-
-        context.addListener { ctx: BuildContext, code: String -> bloc.refresh(ctx, code) }
-
         return Provider(
             service = bloc,
             child = StreamConsumer(

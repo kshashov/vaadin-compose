@@ -3,6 +3,7 @@ package io.github.kshashov.vaadincompose
 import com.vaadin.flow.component.HasComponents
 import io.github.kshashov.vaadincompose.debug.DebugToolsBloc
 import io.github.kshashov.vaadincompose.debug.DebugWindow
+import io.github.kshashov.vaadincompose.widget.Element
 import io.github.kshashov.vaadincompose.widget.Widget
 import io.github.kshashov.vaadincompose.widget.components.Provider
 
@@ -22,11 +23,13 @@ interface ComposablePage {
         val bloc = DebugToolsBloc()
         val context = buildContext()
 
-        val element = if (isDebug()) {
-            Provider(
+        val element: Element<*> = if (isDebug()) {
+            val provider = Provider(
                 service = bloc,
                 child = debugWidget(context, bloc, build(context))
             ).createElement()
+            context.addListener { ctx: BuildContext, code: String -> bloc.refresh(ctx, code) }
+            provider
         } else {
             build(context).createElement()
         }

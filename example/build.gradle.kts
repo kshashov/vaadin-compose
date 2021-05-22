@@ -19,6 +19,7 @@ configurations {
 
 repositories {
 	jcenter()
+	mavenLocal()
 	mavenCentral()
 }
 
@@ -27,18 +28,18 @@ gretty {
 	servletContainer = "jetty9.4"
 }
 
-extra["vaadinVersion"] = "14.5.3"
-
 dependencies {
+	implementation("io.github.kshashov:vaadin-compose:0.0.3-SNAPSHOT")
 	implementation(enforcedPlatform("com.vaadin:vaadin-bom:14.6.0"))
+
+	implementation("com.vaadin:vaadin-core")
+	implementation("io.reactivex.rxjava3:rxjava:3.0.12")
+
+	implementation("org.slf4j:slf4j-simple:1.7.30")
+	compileOnly("javax.servlet:javax.servlet-api:3.1.0")
 
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
 	implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
-
-	compileOnly("org.projectlombok:lombok:1.18.20")
-	annotationProcessor("org.projectlombok:lombok")
-
-	compileOnly("javax.servlet:javax.servlet-api:3.1.0")
 }
 
 tasks.withType<KotlinCompile> {
