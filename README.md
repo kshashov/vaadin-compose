@@ -5,12 +5,15 @@
 [![Build Status](https://travis-ci.com/kshashov/vaadin-compose.svg?branch=main)](https://travis-ci.com/kshashov/vaadin-compose)
 [![codecov](https://codecov.io/gh/kshashov/vaadin-compose/branch/main/graph/badge.svg?token=3N9RLWMRQT)](https://codecov.io/gh/kshashov/vaadin-compose)
 
+Vaadin Compose provides an ability to build web pages on Kotlin in reactive way as if you are working with Flutter,
+Vue.js, React or other modern UI frameworks. Shortly, this is a combination of [Flutter](https://flutter.dev/)
+and [Vaadin Flow](https://vaadin.com/flow) frameworks.
+
 ![Counter](/img/vaadin-compose-counter.gif "Counter")
 
 ```kotlin
 @Route("counter")
-@CssImport("./styles/styles.css")
-class Counter : BaseComposablePage(), ComposablePage {
+class Counter : BaseComposablePage() {
 
    override fun build(context: BuildContext) = MainWidget()
 
@@ -40,6 +43,12 @@ class Counter : BaseComposablePage(), ComposablePage {
 }
 ```
 
+## Disclaimer
+
+At the moment, the library is only a proof of concept as it is in the early stages of development. The basic ideas have
+already been implemented, but the collection of built-in widgets is implemented just as an example and is not suitable
+for more than just a couple of demo pages.
+
 ## Install
 
 ### Maven
@@ -68,13 +77,12 @@ class Counter : BaseComposablePage(), ComposablePage {
 ### Gradle
 
 ```groovy
-allprojects {
-   repositories {
-      ...
-      maven { url 'https://jitpack.io' }
-   }
+repositories {
+   maven { url 'https://jitpack.io' }
 }
+```
 
+```groovy
 dependencies {
    implementation 'com.github.kshashov:vaadin-compose:0.0.6'
 }
@@ -86,51 +94,49 @@ The basic design concepts were borrowed from [Flutter](https://flutter.dev/docs/
 framework.
 
 In general, the programmers just need to declare UI using widgets structure. Widgets are the building blocks of a app’s
-user interface, and each widget is an immutable declaration of part of the user interface.
+user interface, and each widget is an immutable declaration of part of the user interface. As with Flutter, widgets here
+are just configurations, so they have nothing to do with the rendering (Vaadin) side. Just the opposite to widgets there
+is an elements hierarchy that is intended to create and update Vaadin Components according to widgets hierarchy.
 
 ### Rendering
 
-As with Flutter, widgets here are just configurations, so they don't work with render (Vaadin) side. Just the opposite
-to widgets there is a Elements hierarchy that is intended to create and update Vaadin Components according to widgets
-hierarchy.
-
 Shortly, the first rendering is performed in the following way:
 
-1. The `build(BuildContext)` widget's methods are invoked to build widgets structure.
-   * For each widgets the BuildContext nodes are created. In result, the BuildContext tree has exactly the same
-     structure as widgets tree has. Each BuildContext has Element instance that has been created by `createElement`
-     widget method so BuildContext tree will be mentioned as Element tree in the following notes
+1. The `build(BuildContext)` Widget's methods are invoked recursively to build Widgets tree.
+   * For each Widget the BuildContext nodes are created. In result, the BuildContext tree has exactly the same structure
+     as Widgets tree has. Each BuildContext has Element instance that has been created by `createElement`
+     Widget method so BuildContext tree will be mentioned as an *Element tree* in the following notes
 2. Each Element creates and configures Vaadin Component instances. Some of the Elements do nothing here and just
    propagate Component from nested Elements.
 3. After the entire Element tree is rendered the rendered Component from root Element can be added to the target page.
 
 #### RenderWidget
 
-Some of the widgets are inherited from `RenderWidget`. it means that their Elements are intended to generate Vaadin
-Components according to widget's properties: `Button`, `Container`, `DataTable`, `TreeDataTable`, `Details`, `Dialog`
+Some of the Widgets are inherited from `RenderWidget`. it means that their Elements are intended to generate Vaadin
+Components according to Widget's properties: `Button`, `Container`, `DataTable`, `TreeDataTable`, `Details`, `Dialog`
 , `Label`, `SplitLayout`, `Text`.
 
-The other widgets are generally interited from `StatelessWidget` and `StatefulWidget` classes. It means that their
+The other Widgets are generally interited from `StatelessWidget` and `StatefulWidget` classes. It means that their
 Elements just propagate already rendered Vaadin Component from nested Elements: `Conditional`, `Details`,
 `HasDialog`, `ListView`, `Provider`, `StreamConsumer`, `Table`.
 
-The full widgets list can be found in the `io.github.kshashov.vaadincompose.widget.components` [package]
+The full Widgets list can be found in the `io.github.kshashov.vaadincompose.widget.components` [package]
 (src/main/kotlin/io/github/kshashov/vaadincompose/widget/components).
 
 ### Further updating
 
 This is what a separate Element tree is needed for.
 
-The framework introduces two major classes of widget: stateful and stateless widgets. Many widgets have no mutable
-state: they don’t have any properties that are changed over time. These widgets subclass `StatelessWidget`. However, if
-the widget properties need to change based on user interaction or other factors, the `StatefulWidget`
+The framework introduces two major classes of Widget: Stateful and Stateless Widgets. Many Widgets have no mutable
+state: they don’t have any properties that are changed over time. These Widgets subclass `StatelessWidget`. However, if
+the Widget properties need to change based on user interaction or other factors, the `StatefulWidget`
 should be used as a base class.
 
 #### StatefulWidget
 
-For example, if a widget has a counter that increments whenever the user taps a button, then the value of the counter is
-the state for that widget. When that value changes, the widget needs to be rebuilt to update its part of the UI. These
-widgets subclass `StatefulWidget`, and (because the widget itself is immutable) they store mutable state in a separate
+For example, if a Widget has a counter that increments whenever the user taps a button, then the value of the counter is
+the state for that Widget. When that value changes, the Widget needs to be rebuilt to update its part of the UI. These
+Widgets subclass `StatefulWidget`, and (because the Widget itself is immutable) they store mutable state in a separate
 class that subclasses `WidgetState`. Stateful Widgets don't have a build method; instead, their user interface is built
 through their `WidgetState` object.
 
@@ -162,14 +168,14 @@ Actially, the `WidgetState` just proxies updating invocation to `StatefulElement
 following way:
 
 1. Recreates Widget tree by `build(BuildContext)` recursive invocation.
-2. Attach new widgets to already created Elements if possible. The old Element is reused only if the previous Widget Key
+2. Attach new Widgets to already created Elements if possible. The old Element is reused only if the previous Widget Key
    is equals to the new one. The new Element will be created If there is no Elements for the current Widget Key.
-    * By default, the Widget Key is generated by pattern `"${widget.javaClass.name}${index}"`. Some of the Elements may
-      override this behaviour to add some tweaks
-    * The obsolete Element is removed from cache if there is no custom logic on the root Element side. For example,
-      the `ConditionalElement` saves the latest Element child for each condition branch to get rid of Element recreation
-      on each condition change
-    * In case of Element re-attaching, the Vaadin Component is just updated and isn't recreated.
+   * By default, the Widget Key is generated by pattern `"${widget.javaClass.name}${index}"`. Some of the Elements may
+     override this behaviour to add some tweaks
+   * The obsolete Element is removed from cache if there is no custom logic on the root Element side. For example,
+     the `ConditionalElement` saves the latest Element child for each condition branch to get rid of Element recreation
+     on each condition change
+   * In case of Element re-attaching, the Vaadin Component is just updated and isn't recreated.
 3. After the Element sub-tree is refreshed, the rendered Component from sub-tree root is replaced by the new one.
 
 ![Elements tree](/img/compose-elements-tree.png "Elements Tree")
@@ -178,10 +184,10 @@ following way:
 Since the Widget key is not required for `StatelessWidget`, it may be to easy to forget about it in some important
 moments. The common rule here is to specify Widget Key if using multiple Stateful Widget instances of the same class as
 a childs and their order could be changed during refresh. Without specified key it will be too hard for framework to
-determine what StatefulElement should be used for new rebuilded widget because the default key doesn't store any unique
+determine what StatefulElement should be used for new rebuilded Widget because the default key doesn't store any unique
 identifiers.
 
-Here we set a key for nested `TodoItemWidget` widgets because their order could be changed later:
+Here we set a key for nested `TodoItemWidget` Widgets because their order could be changed later:
 
 ```kotlin
 return StreamConsumer(
@@ -228,7 +234,7 @@ class Counter : Div(), ComposablePage, BeforeEnterObserver, BeforeLeaveObserver 
 
 ## Services interaction
 
-The most convenient method here is to expose your data as a RxJava streams in MVVM style (see Bloc pattern).
+The most convenient method here is to expose your data as RxJava streams in MVVM style (see Bloc pattern).
 
 ### Provider
 
