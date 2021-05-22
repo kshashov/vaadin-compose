@@ -51,13 +51,16 @@ class Counter : BaseComposablePage(), ComposablePage {
       <url>https://jitpack.io</url>
    </repository>
 </repositories>
+```
+
+```xml
 
 <dependencies>
-<dependency>
-   <groupId>com.github.kshashov</groupId>
-    <artifactId>vaadin-compose</artifactId>
-    <version>0.0.3</version>
-</dependency>
+   <dependency>
+      <groupId>com.github.kshashov</groupId>
+      <artifactId>vaadin-compose</artifactId>
+      <version>0.0.3</version>
+   </dependency>
 </dependencies>
 ```
 
@@ -72,7 +75,7 @@ allprojects {
 }
 
 dependencies {
-    implementation 'com.github.kshashov:vaadin-compose:0.0.3'
+   implementation 'com.github.kshashov:vaadin-compose:0.0.3'
 }
 ```
 
@@ -278,9 +281,9 @@ override fun build(context: BuildContext): Widget {
             onClick = {
                setState { counter++ }
             }
-            }
-        }
-    }
+         }
+      }
+   }
 }
 
 ```

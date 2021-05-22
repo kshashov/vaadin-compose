@@ -54,7 +54,7 @@ release {
     tagCommitMessage = "Creating tag:"
     newVersionCommitMessage = "New version commit:"
     preTagCommitMessage = "Pre tag commit:"
-    tagTemplate = "$version"
+    tagTemplate = "${project.version}"
 
     with(getProperty("git") as GitAdapter.GitConfig) {
         requireBranch = "feature/1"
@@ -90,7 +90,7 @@ tasks {
         doFirst {
             val file = file("README.md")
             var content = file.readText()
-            val versionPattern = "/\\d+(?:\\.\\d+)+/"
+            val versionPattern = "\\d+(?:\\.\\d+)+"
             content = content.replace(
                 Regex("<version>${versionPattern}</version>"),
                 "<version>${version}</version>"
