@@ -1,4 +1,4 @@
-package io.github.kshashov.vaadincompose
+package io.github.kshashov.vaadincompose.example
 
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
@@ -7,5 +7,5 @@ import org.springframework.boot.runApplication
 class VaadinComposeApplication
 
 fun main(args: Array<String>) {
-	runApplication<VaadinComposeApplication>(*args)
+    runApplication<VaadinComposeApplication>(*args)
 }

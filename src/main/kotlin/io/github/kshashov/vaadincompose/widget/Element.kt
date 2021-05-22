@@ -40,7 +40,7 @@ abstract class Element<WIDGET : Widget>(var widget: WIDGET) {
         }
         state = State.ATTACHED
         onBeforeWidgetRefresh()
-        oldWidget = this.widget as WIDGET
+        oldWidget = this.widget
         doAttachWidget(widget)
         onAfterWidgetRefresh()
 

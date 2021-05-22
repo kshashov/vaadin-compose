@@ -64,7 +64,7 @@ interface HasChildsElement : HasDebugCacheInfoElement {
     /**
      * Returns true if the element should be stored in the cache to be reused later.
      */
-    fun shouldKeepDetachedElement(mutableEntry: Map.Entry<String, Element<*>>): Boolean {
+    fun shouldKeepDetachedElement(entry: Map.Entry<String, Element<*>>): Boolean {
         return false
     }
 
