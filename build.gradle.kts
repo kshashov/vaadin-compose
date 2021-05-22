@@ -51,7 +51,10 @@ dependencies {
 release {
     scmAdapters = mutableListOf<Class<out net.researchgate.release.BaseScmAdapter>>(GitAdapter::class.java)
 //    pushReleaseVersionBranch = "main"
-    tagTemplate = "$name.$version"
+    tagCommitMessage = "Creating tag:"
+    newVersionCommitMessage = "New version commit:"
+    preTagCommitMessage = "Pre tag commit:"
+    tagTemplate = "$version"
 
     with(getProperty("git") as GitAdapter.GitConfig) {
         requireBranch = "feature/1"
@@ -81,5 +84,22 @@ tasks {
             xml.isEnabled = true
         }
         dependsOn(test)
+    }
+
+    updateVersion {
+        doFirst {
+            val file = file("README.md")
+            var content = file.readText()
+            val versionPattern = "/\\d+(?:\\.\\d+)+/"
+            content = content.replace(
+                Regex("<version>${versionPattern}</version>"),
+                "<version>${version}</version>"
+            )
+            content = content.replace(
+                Regex("implementation 'com.github.kshashov:vaadin-compose:${versionPattern}'"),
+                "implementation 'com.github.kshashov:vaadin-compose:${version}'"
+            )
+            file.writeText(content)
+        }
     }
 }

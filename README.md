@@ -55,8 +55,8 @@ class Counter : BaseComposablePage(), ComposablePage {
 <dependencies>
 <dependency>
    <groupId>com.github.kshashov</groupId>
-   <artifactId>vaadin-compose</artifactId>
-   <version>VERSION</version>
+    <artifactId>vaadin-compose</artifactId>
+    <version>0.0.3</version>
 </dependency>
 </dependencies>
 ```
@@ -72,7 +72,7 @@ allprojects {
 }
 
 dependencies {
-   implementation 'com.github.kshashov:vaadin-compose:VERSION'
+    implementation 'com.github.kshashov:vaadin-compose:0.0.3'
 }
 ```
 
