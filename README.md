@@ -1,5 +1,6 @@
 # Vaadin Compose
 
+[![Demo](https://img.shields.io/badge/Demo-Online-brightgreen)](https://vaadin-compose.herokuapp.com/)
 [![JitPack](https://jitpack.io/v/kshashov/vaadin-compose.svg)](https://jitpack.io/#kshashov/vaadin-compose)
 [![Build Status](https://travis-ci.com/kshashov/vaadin-compose.svg?branch=main)](https://travis-ci.com/kshashov/vaadin-compose)
 [![codecov](https://codecov.io/gh/kshashov/vaadin-compose/branch/main/graph/badge.svg?token=3N9RLWMRQT)](https://codecov.io/gh/kshashov/vaadin-compose)
