@@ -36,6 +36,7 @@ interface ComposablePage {
 
         element.mount(context)
 
+        removeAll()
         add(element.renderedComponent)
 
         if (isDebug()) {
@@ -49,7 +50,10 @@ interface ComposablePage {
      * Should be used to trigger the same method invocations in the nested Elements and Widget States before the Page is closed.
      */
     fun dispose(context: BuildContext) {
-        context.element.dispose()
+        with(context.childs[0].element) {
+            detach()
+            dispose()
+        }
     }
 
     fun debugWidget(context: BuildContext, bloc: DebugToolsBloc, child: Widget): Widget {

@@ -5,6 +5,7 @@ plugins {
     jacoco
     id("net.researchgate.release") version "2.8.1"
     id("maven-publish")
+    id("maven")
     kotlin("jvm") version "1.4.32"
 }
 

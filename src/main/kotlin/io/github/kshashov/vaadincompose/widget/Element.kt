@@ -69,12 +69,12 @@ abstract class Element<WIDGET : Widget>(var widget: WIDGET) {
      * Invoked when the element is detached from tree but still stored in cache.
      */
     open fun detach() {
-        if (!state.equals(State.MOUNTED) && !state.equals(State.REMOUNTED)) {
-            throw IllegalStateException("Element State should be MOUNTED before detach. Actual: $state")
-        }
-
         for (child in context.childs) {
-            child.element.detach()
+            with(child.element) {
+                if (!state.equals(State.DETACHED) && !state.equals(State.DISPOSED)) {
+                    child.element.detach()
+                }
+            }
         }
 
         state = State.DETACHED
@@ -84,12 +84,12 @@ abstract class Element<WIDGET : Widget>(var widget: WIDGET) {
      * Invoked after the [detach] method if the element is completely removed from the hierarchy.
      */
     open fun dispose() {
-        if (state != State.DETACHED) {
-            throw IllegalStateException("Element State should be DETACHED before detach. Actual: $state")
-        }
-
         for (child in context.childs) {
-            child.element.dispose()
+            with(child.element) {
+                if (!state.equals(State.DISPOSED)) {
+                    child.element.dispose()
+                }
+            }
         }
 
         state = State.DISPOSED
