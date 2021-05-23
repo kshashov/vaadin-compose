@@ -56,7 +56,7 @@ release {
     tagTemplate = "\$version"
 
     with(getProperty("git") as GitAdapter.GitConfig) {
-        requireBranch = "feature/1"
+        requireBranch = "main"
     }
 }
 
