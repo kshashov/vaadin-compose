@@ -20,7 +20,7 @@ configurations {
 
 repositories {
 	jcenter()
-//	mavenLocal()
+	mavenLocal()
 	mavenCentral()
 	maven { setUrl("https://jitpack.io") }
 }
@@ -33,7 +33,7 @@ dependencyManagement {
 
 dependencies {
 	implementation("com.vaadin:vaadin-spring-boot-starter")
-	implementation("io.github.kshashov:vaadin-compose:0.0.6")
+	implementation("io.github.kshashov:vaadin-compose:0.3.1")
 	implementation("io.reactivex.rxjava3:rxjava:3.0.12")
 
 	annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
@@ -41,8 +41,6 @@ dependencies {
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
 	implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
 }
-
-vaadin { productionMode = true }
 
 tasks.withType<KotlinCompile> {
 	kotlinOptions {
