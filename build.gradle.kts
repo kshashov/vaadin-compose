@@ -53,6 +53,7 @@ release {
     tagCommitMessage = "Creating tag:"
     newVersionCommitMessage = "New version commit:"
     preTagCommitMessage = "Pre tag commit:"
+    failOnUnversionedFiles = false
     tagTemplate = "\$version"
 
     with(getProperty("git") as GitAdapter.GitConfig) {
