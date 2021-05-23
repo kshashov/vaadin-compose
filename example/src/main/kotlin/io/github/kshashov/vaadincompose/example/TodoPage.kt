@@ -1,6 +1,5 @@
 package io.github.kshashov.vaadincompose.example
 
-import com.vaadin.flow.component.dependency.CssImport
 import com.vaadin.flow.component.html.Div
 import com.vaadin.flow.component.orderedlayout.FlexLayout
 import com.vaadin.flow.router.BeforeEnterEvent
@@ -15,20 +14,14 @@ import io.github.kshashov.vaadincompose.widget.Widget
 import io.github.kshashov.vaadincompose.widget.components.*
 import io.reactivex.rxjava3.subjects.BehaviorSubject
 
-@CssImport("./styles/styles.css")
-@Route("")
-class Todo : Div(), ComposablePage, BeforeEnterObserver {
+@Description("Example of <code>Provider</code> and <code>StreamConsumer</code> widgets usage")
+@Route("todo", layout = Root::class)
+class TodoPage : Div(), ComposablePage, BeforeEnterObserver {
 
-    init {
-        setSizeFull()
-    }
+    override fun isDebug() = true
 
     override fun beforeEnter(event: BeforeEnterEvent?) {
         init()
-    }
-
-    override fun isDebug(): Boolean {
-        return true
     }
 
     override fun build(context: BuildContext): Widget {
@@ -44,7 +37,6 @@ class Todo : Div(), ComposablePage, BeforeEnterObserver {
             return Container(
                 height = "100%",
                 direction = FlexLayout.FlexDirection.COLUMN,
-                classes = listOf("main-widget"),
                 childs = mutableListOf(
                     Container(
                         alignItems = "baseline",

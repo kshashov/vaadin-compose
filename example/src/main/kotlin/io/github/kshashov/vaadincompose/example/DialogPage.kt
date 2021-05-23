@@ -1,6 +1,5 @@
 package io.github.kshashov.vaadincompose.example
 
-import com.vaadin.flow.component.dependency.CssImport
 import com.vaadin.flow.component.orderedlayout.FlexLayout
 import com.vaadin.flow.router.Route
 import io.github.kshashov.vaadincompose.BaseComposablePage
@@ -12,9 +11,11 @@ import io.github.kshashov.vaadincompose.widget.components.Container
 import io.github.kshashov.vaadincompose.widget.components.Dialog
 import io.github.kshashov.vaadincompose.widget.components.HasDialog
 
-@CssImport("./styles/styles.css")
-@Route("dialog")
+@Description("Example of <code>Dialog</code> widget usage. The dialog can be opened by setting <code>show = true</code> parameter")
+@Route("dialog", layout = Root::class)
 class DialogPage : BaseComposablePage() {
+
+    override fun isDebug() = true
 
     override fun build(context: BuildContext): Widget {
         return MainWidget()
@@ -31,7 +32,6 @@ class DialogPage : BaseComposablePage() {
             return HasDialog(
                 child = Container(
                     direction = FlexLayout.FlexDirection.COLUMN,
-                    classes = listOf("main-widget"),
                     childs = listOf(
                         Button("open", onClick = { setState { show = true } })
                     )

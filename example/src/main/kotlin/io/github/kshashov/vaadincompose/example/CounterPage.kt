@@ -1,6 +1,5 @@
 package io.github.kshashov.vaadincompose.example
 
-import com.vaadin.flow.component.dependency.CssImport
 import com.vaadin.flow.component.orderedlayout.FlexLayout
 import com.vaadin.flow.router.Route
 import io.github.kshashov.vaadincompose.BaseComposablePage
@@ -12,9 +11,12 @@ import io.github.kshashov.vaadincompose.widget.components.Button
 import io.github.kshashov.vaadincompose.widget.components.Container
 import io.github.kshashov.vaadincompose.widget.components.Label
 
-@CssImport("./styles/styles.css")
-@Route("counter")
-class Counter : BaseComposablePage() {
+
+@Description("Example of <code>Stateful</code> widget usage with <code>Int</code> state incremented by button listener")
+@Route("counter", layout = Root::class)
+class CounterPage : BaseComposablePage() {
+
+    override fun isDebug() = true
 
     override fun build(context: BuildContext) = MainWidget()
 
