@@ -69,7 +69,7 @@ for more than just a couple of demo pages.
    <dependency>
       <groupId>com.github.kshashov</groupId>
       <artifactId>vaadin-compose</artifactId>
-      <version>0.0.6</version>
+      <version>0.3.0</version>
    </dependency>
 </dependencies>
 ```
@@ -84,7 +84,7 @@ repositories {
 
 ```groovy
 dependencies {
-   implementation 'com.github.kshashov:vaadin-compose:0.0.6'
+   implementation 'com.github.kshashov:vaadin-compose:0.3.0'
 }
 ```
 
